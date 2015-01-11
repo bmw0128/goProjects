@@ -1,0 +1,151 @@
+<div ng-show="isAdmin || isClient">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            <input type="text" ng-model="selected"
+                                    typeahead="drugName for drugName in drugNames"
+                                    class="search-query">
+        </div>
+
+        <button type="button" class="tiny" ng-click="newDrug()">
+            Reload
+        </button>
+
+
+
+        <label>Selected Drug: {{selectedDrug.drugName}}</label>
+    </div>
+    </p>
+
+    <div class="row">
+        <label>Brand Names</label>
+        <div class="small-12 columns">
+            <span ng-repeat="brandName in selectedDrug.brandNames">
+                {{brandName}}
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <label>ADRs</label>
+        <div class="small-12 columns">
+            <span ng-repeat="adr in selectedDrug.adrs">
+                {{adr}}
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <label>Monitoring Parameters</label>
+        <div class="small-12 columns">
+            <span ng-repeat="mp in selectedDrug.monitoringParameters">
+                {{mp}}
+            </span>
+        </div>
+    </div>
+
+    <!--
+    <table class="listingTable">
+
+        <tbody>
+            <tr ng-repeat="">
+                {{brandName}}
+            </tr>
+
+            <tr>
+                {{selectedDrug.adrs}}
+            </tr>
+            <tr>
+                {{selectedDrug.monitoringParameters}}
+            </tr>
+            <tr>
+                {{selectedDrug.interactions}}
+            </tr>
+
+        <tr ng-repeat="drug in drugs | filter:search | orderBy:'drugName'">
+            <td class="actionCell">
+                <a href="#/admin/drugInteractions/edit/{{drug.drugName}}">I</a>
+            </td>
+            <td class="nameCell">
+                <a href="#/admin/drugManagement/detail/{{drug.drugName}}"/>{{drug.drugName}}</a>
+                - Brands: {{drug.brandNames}}
+            </td>
+            <td class="actionCell">
+                <a href="#/admin/drugManagement/edit/{{drug.drugName}}"><i class="foundicon-edit"></i></a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+    -->
+
+
+</div>
+
+<!--
+    <table class="listingTable">
+
+        <thead>
+        <tr>
+            <th></th>
+            <th>Drugs <a href="#/admin/drugManagement/new">
+                <i class="foundicon-plus"></i></a>
+            </th>
+            <th></th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="drug in drugs | filter:search | orderBy:'drugName'">
+            <td class="actionCell">
+                <a href="#/admin/drugInteractions/edit/{{drug.drugName}}">I</a>
+            </td>
+            <td class="nameCell">
+                <a href="#/admin/drugManagement/detail/{{drug.drugName}}"/>{{drug.drugName}}</a>
+                - Brands: {{drug.brandNames}}
+            </td>
+            <td class="actionCell">
+                <a href="#/admin/drugManagement/edit/{{drug.drugName}}"><i class="foundicon-edit"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+-->
+
+
+<!-- old....
+<form name="myForm">
+    <div class="control-group" ng-class="{error: myForm.drugName.$invalid}">
+        <label>Drug Name</label>
+        <input type="text" name="drugName" ng-model="drug.drugName" required>
+          <span ng-show="myForm.drugName.$error" class="help-inline">
+                                                        Required</span>
+    </div>
+
+    <label>ADRs</label>
+    <textarea name="adr" ng-model="drug.adr"></textarea>
+
+    <label>Monitoring Parameters</label>
+    <textarea name="monitoringParameters" ng-model="drug.monitoringParameters"></textarea>
+    <br>
+    <a href="#/" class="btn">Cancel</a>
+    <button ng-click="save()" ng-disabled="isClean() || myForm.$invalid"
+                                            class="btn btn-primary">Save</button>
+    <button ng-click="destroy()" ng-show="project._id"
+                                            class="btn btn-danger">Delete</button>
+</form>
+-->

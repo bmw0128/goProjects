@@ -1,0 +1,49 @@
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="large-12 columns">
+            <input type="text" ng-model="search" class="search-query" placeholder="Search"/>
+        </div>
+    </div>
+    </p>
+
+<p>
+<div class="row">
+    <div class="large-12 columns">
+<table>
+    <thead>
+    <tr>
+
+        <th width="500">Client <a href="#/admin/clientManagement/new">
+            <i class="foundicon-plus"></i></a>
+
+        </th>
+        <th width="500">Role</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--
+    <tr ng-repeat="client in clients | filter:search | orderBy:'email'" ng-show="client._id.$oid">
+        <td>{{client.email}}</td>
+        <td>{{client.role}}</td>
+        <td>
+            <a href="#/edit/{{client._id.$oid}}"><i class="icon-pencil"></i></a>
+        </td>
+    </tr>
+    -->
+    <tr ng-repeat="client in clients | filter:search | orderBy:'email'">
+        <td>{{client.email}}</td>
+        <td>{{client.role}}
+
+        </td>
+        <td>
+            <a href="#/admin/clientManagement/edit/{{client.email}}"><i class="foundicon-edit"></i></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div></div>
+    </p>
+</div>

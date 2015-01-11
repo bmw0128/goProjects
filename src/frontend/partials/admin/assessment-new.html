@@ -1,0 +1,77 @@
+<div ng-show="isAdmin">
+    <form name="myForm" novalidate>
+
+        <div class="row" ng-show="isDuplicateAssessmentName">
+            <div class="small-12 columns">
+                <label class="error">Duplicate assessment name</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label ng-class="{error: myForm.assessmentName.$invalid}">Assessment Name
+                    <input type="text" id="assessmentName" name="assessmentName"
+                           ng-model="assessment.assessmentName"
+                           ng-focus="resetDuplicateAssessmentName()"
+                           ng-change="resetDuplicateAssessmentName()"
+                           ng-mouseleave="checkDuplicateAssessmentName(assessment.assessmentName)"
+                           required/>
+                    <span ng-show="myForm.assessmentName.$invalid" class="help-inline">
+                                                                    Required</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Alias Names<a ng-click="addAliasNameField()"><i class="foundicon-plus"></i></a>
+                </label>
+                <div ng-show="showDuplicateAliasAssessmentNames">
+                    <a class="error" ng-click="clearDuplicateAliasAssessmentNames()">
+                        Assessment name(s) already exist - click to clear
+                    </a>
+                    <div class="error" ng-repeat="duplicateAssessmentName in duplicateAliasAssessmentNames">
+                        <li>
+                            {{duplicateAssessmentName}}
+                        </li>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-repeat="aliasName in aliasNames">
+                <div class="small-10 columns">
+                    <input type="text" id="ans-{{$index}}" name="ans-{{$index}}"
+                           value="{{dups[$index]}}"
+                           ng-mouseleave="addAliasAssessmentName($index)"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteAliasNameField($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                                            || isDuplicateAssessmentName
+                                                                                            ">
+                    Save
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>

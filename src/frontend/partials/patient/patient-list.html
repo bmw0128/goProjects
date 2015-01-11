@@ -1,0 +1,33 @@
+
+<div ng-show="isAdmin || isClient">
+
+    <div class="row">
+        <p></p>
+        <div class="small-12 columns">
+
+            <table class="listingTable">
+
+                <thead>
+                <tr>
+                    <th>Patients <a href="#/patients/new">
+                        <i class="foundicon-plus"></i></a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="patient in patients | filter:search | orderBy:'id'">
+                    <td class="nameCell">
+                        <a href="#/patients/detail/{{patient.id}}">{{patient.id}}</a>
+                    </td>
+                    <td class="actionCell">
+                        <a href="#/patients/edit/{{patient.id}}"><i class="foundicon-edit"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

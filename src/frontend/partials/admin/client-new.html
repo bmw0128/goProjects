@@ -1,0 +1,76 @@
+
+<div ng-show="isAdmin">
+<form novalidate name="myForm">
+    <!--
+    <div class="control-group" ng-class="{error: myForm.clientEmail.$invalid}">
+    -->
+        <!--
+        <label>Client Email</label>
+        <input type="text" name="clientEmail" ng-model="client.email" required>
+          <span ng-show="myForm.clientEmail.$error" class="help-inline">
+                                                        Required</span>
+
+        <label>Role</label>
+        <select name="clientRole" ng-model="client.role" required>
+            <option value="">Select Role</option>
+            <option ng-repeat="role in roleOptions" value="{{role.name}}">{{role.name}}
+        </select>
+        <span ng-show="myForm.clientRole.$error" class="help-inline">
+                                                        Required</span>
+        -->
+
+
+        <div class="row">
+            <div class="large-6 columns">
+                <label ng-class="{error: myForm.clientEmail.$invalid}">Client Email
+                    <input type="email" name="clientEmail" ng-model="client.email" required/>
+                    <span ng-show="myForm.clientEmail.$invalid" class="help-inline">
+                                                                    Required</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="large-6 columns">
+                <hr>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="large-6 columns">
+                <label ng-class="{error: myForm.clientRole.$invalid}">Role
+                    <select name="clientRole" ng-model="client.role" required>
+                        <option value="">Select Role</option>
+                        <option ng-repeat="role in roleOptions" value="{{role.name}}">{{role.name}}
+                    </select>
+                <span ng-show="myForm.clientRole.$invalid" class="help-inline">
+                                                        Required</span>
+                </label>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="row">
+            <div class="large-6 columns">
+                <!--
+                <a href="#/admin/clientManagement" class="tiny">Cancel</a>
+
+                <button ng-click="save()" ng-disabled="isClean() || myForm.$invalid"
+                        class="btn btn-primary">Save</button>
+                -->
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid">
+                    Save
+                </button>
+
+                <button ng-click="destroy()" ng-show="project._id" class="tiny">Delete</button>
+            </div>
+        </div>
+   <!--
+   </div>
+   -->
+
+</form>
+</div>

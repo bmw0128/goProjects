@@ -1,0 +1,46 @@
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            <input type="text" ng-model="search" class="search-query" placeholder="Search"/>
+        </div>
+    </div>
+    </p>
+
+    <div class="row">
+        <div class="small-12 columns">
+
+            <table class="listingTable">
+
+                <thead>
+                <tr>
+                    <th>Diseases <a href="#/admin/diseaseManagement/new">
+                        <i class="foundicon-plus"></i></a>
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="disease in diseases | filter:search | orderBy:'diseaseName'">
+                    <td class="nameCell">
+                        <a href="#/admin/diseaseManagement/detail/{{disease.id}}">{{disease.diseaseName}}</a>
+
+                        <div>{{listAliasNames(disease.aliasNames)}}</div>
+
+                    </td>
+                    <td class="actionCell">
+                        <a href="#/admin/diseaseManagement/edit/{{disease.id}}"><i class="foundicon-edit"></i></a>
+                    </td>
+                    <td class="nameCell">
+                        <a href="#/admin/diseaseManagement/tx/{{disease.id}}"><i>Tx</i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

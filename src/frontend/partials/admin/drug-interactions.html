@@ -1,0 +1,76 @@
+
+<div ng-show="isAdmin">
+    <form name="myForm" novalidate>
+
+
+        <div class="row">
+
+            <div class="drugName">
+                <label>Selected Drug: {{selectedDrug.drugName}}</label>
+
+                <a ng-click="sortByDrugName()">Sort by Drug Name</a>
+
+                <button type="button" class="tiny" ng-click="save()"
+                                        ng-disabled="isClean() || myForm.$invalid
+                                                        || missingInteractionInfo.length > 0"
+
+                                                >Save</button>
+            </div>
+
+            <div id="fadedMessage">
+                <p>Saved</p>
+            </div>
+
+            <div ng-show="missingInteractionInfo.length > 0">
+                <label class="error">Missing info for drug(s)
+                    <a ng-click="clearMissingInterationInfo()">
+                                        -- click to clear</a>
+                </label>
+            </div>
+            <div ng-repeat="drugName in missingInteractionInfo track by $index">
+                <li>{{drugName}}</li>
+            </div>
+
+            <br/>
+
+
+
+            <div class="interactionDrugSearch">
+                <interaction-drug-search-typeahead />
+            </div>
+
+
+            <div ng-repeat="interaction in selectedDrug.interactions track by $index | orderBy:'drugName'">
+
+                <div class="interactionInfoContainer">
+                    <div class="interactionButtons">
+                        <button type="button" class="tiny" ng-click="deleteInteraction($index)">Delete</button>
+                    </div>
+                    <div class="interactionInfo">
+                        <label>
+                            {{interaction.drugName}}
+                        </label>
+                    </div>
+                    <div class="interactionInfo">
+                        <select id="interactionSeverityLevel-{{$index}}"
+                                                        ng-model="interaction.severityLevel">
+
+                            <option value="" ng-selected="interaction.severityLevel === ''">Select Severity Level</option>
+                            <option value="B" ng-selected="interaction.severityLevel === 'B'">B</option>
+                            <option value="C" ng-selected="interaction.severityLevel === 'C'">C</option>
+                            <option value="D" ng-selected="interaction.severityLevel === 'D'">D</option>
+                            <option value="X" ng-selected="interaction.severityLevel === 'X'">X</option>
+                        </select>
+                    </div>
+
+                    <div class="interactionInfo">
+                        <input type="text" id="interactionSummary-{{$index}}"
+                                                        ng-model="interaction.summary"/>
+                    </div>
+                </div>
+        </div>
+
+
+    </form>
+
+</div>

@@ -1,0 +1,150 @@
+input.search-query {
+    padding-right: 14px;
+    padding-right: 4px \9;
+    padding-left: 14px;
+    padding-left: 4px \9;
+    /* IE7-8 doesn't have border-radius, so don't indent the padding */
+
+    margin-bottom: 0;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+h1 a{
+    color: #fff;
+}
+
+h1 a:link{
+    color: #fff;
+}
+
+.listingTable {
+    max-width:1220px;
+    table-layout: fixed;
+    word-wrap:break-word;
+}
+
+.listingTable .nameCell {
+    max-width: 1200px;
+}
+
+.listingTable .actionCell {
+    max-width: 30px;
+}
+
+.listingTable .checkBoxCell {
+    max-width: 300px;
+}
+
+.listingTable .selectBoxCell {
+    max-width: 200px;
+}
+
+.listingTable .summaryFieldCell {
+    min-width: 790px;
+    max-width: 790px;
+}
+
+.redBorderImportant{
+    border: 1px solid red !important;
+}
+
+.typeaheadResultsDiv{
+    background-color: white;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border: 2px solid;
+    border-radius: 25px;
+
+}
+#interactionDrugSearchContainer{
+    width: 92%;
+    margin: 0 auto;
+}
+
+.typeaheadResultsDiv a { cursor: pointer; }
+.typeaheadResultsDiv a:hover, .typeaheadResultsDiv a.hover { text-decoration: underline; }
+
+.interactionInfoContainer {
+    border: 2px solid;
+    border-color: #6f6074;
+    border-radius: 25px;
+    /*background-color: #74bfdd;*/
+}
+
+.interactionInfo{
+    width: 97%;
+    display: block;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.interactionButtons{
+
+    width: 97%;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.drugName{
+
+    margin-top: 10px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.interactionDrugSearch{
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+#fadedMessage{
+    display: none;
+    position:absolute;
+    top:10%; right:30%;
+    bottom:70%; left:30%;
+    background: white;
+    border: 2px solid black;
+}
+
+#fadedMessage p{
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    position: relative;
+    margin-top: 7%;
+}
+
+table tr th div, table tr td div{
+    font-size: smaller;
+    display: inline;
+}
+
+#footer {
+    color: #6f6074;;
+    font-size: small;
+    text-align: center;
+}
+
+.divTable{
+    max-height:209px;
+    overflow:auto;
+    float: left;
+}
+
+
+
+

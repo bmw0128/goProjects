@@ -1,0 +1,165 @@
+
+
+<div ng-show="isAdmin">
+
+    <form name="myForm">
+
+
+        <div class="row" ng-show="isDuplicateDrugName">
+            <div class="small-12 columns">
+
+                <label class="error">Duplicate drug name --
+                    <a ng-click="resetDuplicateDrugName()"> click to clear</a>
+                </label>
+           </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="control-group" ng-class="{error: myForm.selectedDrug.drugName.$invalid}">
+                    <label>Drug Name
+
+                        <a href="#/admin/drugManagement/interactions/detail/{{selectedDrug.id}}"> Manage Interactions</a>
+
+                    </label>
+
+                    <input type="text" name="drugName" ng-model="selectedDrug.drugName" required>
+
+                    <span ng-show="myForm.selectedDrug.drugName.$error" class="help-inline">
+                                                                                Required</span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Brand Names -->
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Brand Names<a ng-click="addBrandNameField()"><i class="foundicon-plus"></i></a>
+                </label>
+
+                <div ng-show="duplicateBrandNames.length > 0">
+                    <label class="error">Duplicate drug name(s)
+                        <a ng-click="clearDuplicateBrandDrugName()">
+                                             -- click to clear</a>
+                    </label>
+                </div>
+                <div ng-repeat="dup in duplicateBrandNames track by $index">
+                    <li>{{dup}}</li>
+                </div>
+
+                <br/>
+
+            </div>
+
+            <div ng-repeat="brandName in selectedDrug.brandNames track by $index">
+                <div class="small-10 columns">
+                    <input type="text" id="bns-{{$index}}" name="bns-{{$index}}"
+                                                ng-model="selectedDrug.brandNames[$index]"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteBrandNameField($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- End Brand Names -->
+
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <!-- ADRs -->
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>ADRs<a ng-click="addADR()"><i class="foundicon-plus"></i></a></label>
+            </div>
+
+            <div ng-repeat="adr in selectedDrug.adrs track by $index">
+                <div class="small-10 columns">
+                    <input type="text" id="adrs-{{$index}}"
+                                        ng-model="selectedDrug.adrs[$index]"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteADR($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+
+        </div>
+        <!-- End ADRs -->
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+
+        <!-- Monitoring Parameters -->
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Monitoring Parameters<a ng-click="addMonitoringParameter()"><i class="foundicon-plus"></i></a></label>
+            </div>
+            <div ng-repeat="mp in selectedDrug.monitoringParameters track by $index">
+                <div class="small-10 columns">
+                    <input type="text" id="mps-{{$index}}"
+                                            ng-model="selectedDrug.monitoringParameters[$index]"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteMonitoringParameter($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- End Monitoring Parameters -->
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <!-- Dosages -->
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Dosages<a ng-click="addDosage()"><i class="foundicon-plus"></i></a></label>
+            </div>
+            <div ng-repeat="dosage in selectedDrug.dosages track by $index">
+                <div class="small-10 columns">
+                    <input type="text" id="dosages-{{$index}}"
+                                            ng-model="selectedDrug.dosages[$index]"/>
+                    <!--value="{{selectedDrug.dosages[$index]}}"-->
+
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteDosage($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- End Dosages -->
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                        || isDuplicateDrugName
+                                                                        || isDuplicateBrandDrugName"
+                                                            class="btn btn-primary">Save</button>
+                <!--
+                <button class="tiny" ng-click="destroy()" ng-show="selectedDrug.drugName"
+                                                            class="btn btn-danger">Delete</button>
+                -->
+            </div>
+        </div>
+    </form>
+
+</div>

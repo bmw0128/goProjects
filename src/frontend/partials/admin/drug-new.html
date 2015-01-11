@@ -1,0 +1,159 @@
+
+<div ng-show="isAdmin">
+<form name="myForm" novalidate>
+
+        <div class="row" ng-show="isDuplicateDrugName">
+            <div class="small-12 columns">
+                <label class="error">Duplicate generic drug name</label>
+            </div>
+        </div>
+
+    <div class="row" ng-show="isDuplicateBrandDrugName">
+        <div class="small-12 columns">
+            <label class="error">Duplicate brand drug name</label>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label ng-class="{error: myForm.drugName.$invalid}">Generic Drug Name
+                    <input type="text" id="drugName" name="drugName"
+                                                ng-model="drug.drugName"
+                                                ng-focus="resetDuplicateDrugName()"
+                                                ng-change="resetDuplicateDrugName()"
+                                                ng-mouseleave="checkDuplicateDrugName(drug.drugName)"
+                                                required/>
+                    <span ng-show="myForm.drugName.$invalid" class="help-inline">
+                                                                    Required</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <label>Brand Names<a ng-click="addBrandNameField()"><i class="foundicon-plus"></i></a>
+            </label>
+            <div ng-show="showDuplicateBrandDrugNames">
+                <a class="error" ng-click="clearDuplicateBrandDrugNames()">
+                    Drug name(s) already exist - click to clear
+                </a>
+                <div class="error" ng-repeat="duplicateBrandDrugName in duplicateBrandDrugNames">
+                    <li>
+                        {{duplicateBrandDrugName}}
+                    </li>
+                </div>
+            </div>
+        </div>
+
+        <div ng-repeat="brandName in brandNames">
+            <div class="small-10 columns">
+                <input type="text" id="bns-{{$index}}" name="bns-{{$index}}"
+                                                        value="{{dups[$index]}}"
+                                                        ng-mouseleave="addBrandDrugName($index)"/>
+            </div>
+            <div class="small-2 columns">
+                <a ng-click="deleteBrandNameField($index)"><i class="foundicon-minus"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <hr>
+        </div>
+    </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>ADRs<a ng-click="addADR()"><i class="foundicon-plus"></i></a></label>
+            </div>
+
+                <div ng-repeat="adr in adrs">
+                    <div class="small-10 columns">
+                        <input type="text" id="adrs-{{$index}}"/>
+                    </div>
+                    <div class="small-2 columns">
+                        <a ng-click="deleteADR($index)"><i class="foundicon-minus"></i></a>
+                    </div>
+                </div>
+
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <label>Monitoring Parameters<a ng-click="addMonitoringParameter()"><i class="foundicon-plus"></i></a></label>
+        </div>
+                <div ng-repeat="mp in monitoringParameters">
+                    <div class="small-10 columns">
+                        <input type="text" id="mps-{{$index}}"/>
+                    </div>
+                    <div class="small-2 columns">
+                        <a ng-click="deleteMonitoringParameter($index)"><i class="foundicon-minus"></i></a>
+                    </div>
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <label>Dosages<a ng-click="addDosage()"><i class="foundicon-plus"></i></a></label>
+        </div>
+            <div ng-repeat="dosage in dosages">
+                <div class="small-10 columns">
+                    <input type="text" id="dosages-{{$index}}"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteDosage($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+    </div>
+
+    <div class="row">
+        <div class="small-12 columns">
+            <hr>
+        </div>
+    </div>
+
+    <!--
+    <div>
+        <interaction-drug-search-typeahead />
+    </div>
+
+    <br />
+
+    <div interaction-drugs></div>
+
+        <br/>
+    -->
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                                            || isDuplicateDrugName
+                                                                                            ">
+                    Save
+                </button>
+                <button ng-click="destroy()" ng-show="drug._id" class="tiny">Delete</button>
+
+            </div>
+        </div>
+
+</form>
+</div>

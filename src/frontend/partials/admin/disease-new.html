@@ -1,0 +1,126 @@
+<div ng-show="isAdmin">
+    <form name="myForm" novalidate>
+
+        <div class="row" ng-show="isDuplicateDiseaseName">
+            <div class="small-12 columns">
+                <label class="error">Duplicate disease name</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label ng-class="{error: myForm.diseaseName.$invalid}">Disease Name
+                    <input type="text" id="diseaseName" name="diseaseName"
+                           ng-model="disease.diseaseName"
+                           ng-focus="resetDuplicateDiseaseName()"
+                           ng-change="resetDuplicateDiseaseName()"
+                           ng-mouseleave="checkDuplicateDiseaseName(disease.diseaseName)"
+                           required/>
+                    <span ng-show="myForm.diseaseName.$invalid" class="help-inline">
+                                                                    Required</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Alias Names<a ng-click="addAliasNameField()"><i class="foundicon-plus"></i></a>
+                </label>
+                <div ng-show="showDuplicateAliasDiseaseNames">
+                    <a class="error" ng-click="clearDuplicateAliasDiseaseNames()">
+                        Disease name(s) already exist - click to clear
+                    </a>
+                    <div class="error" ng-repeat="duplicateDiseaseName in duplicateAliasDiseaseNames">
+                        <li>
+                            {{duplicateDiseaseName}}
+                        </li>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-repeat="aliasName in aliasNames">
+                <div class="small-10 columns">
+                    <input type="text" id="ans-{{$index}}" name="ans-{{$index}}"
+                           value="{{dups[$index]}}"
+                           ng-mouseleave="addAliasDiseaseName($index)"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteAliasNameField($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <!-- Assessments -->
+        <p>
+        <div class="row">
+            <div class="small-12 columns">
+                <input type="text" ng-model="search" class="search-query" placeholder="Assessment search"/>
+            </div>
+        </div>
+        </p>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+                <div ng-repeat="assessment in assessments | filter:search | orderBy:'assessmentName'">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="cb-{{$index}}"/>
+                                <input type="hidden" id="ass-{{$index}}" value="{{assessment.id}}"/>
+                            </td>
+                            <td>
+                                <label>{{assessment.assessmentName}}</label>
+                            </td>
+                            <td>
+                                <select id="sel-{{$index}}">
+                                    <option value="na">N/A</option>
+                                    <option value="eq">=</option>
+                                    <option value="lt">&lt;</option>
+                                    <option value="gt">&gt;</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" id="in-{{$index}}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Assessments -->
+
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                                            || isDuplicateDiseaseName
+                                                                                            ">
+                    Save
+                </button>
+            </div>
+        </div>
+
+
+
+    </form>
+</div>

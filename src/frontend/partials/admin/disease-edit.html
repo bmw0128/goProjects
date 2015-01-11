@@ -1,0 +1,138 @@
+
+
+<div ng-show="isAdmin">
+
+    <form name="myForm">
+
+        <div class="row" ng-show="isDuplicateDiseaseName">
+            <div class="small-12 columns">
+
+                <label class="error">Duplicate disease name --
+                    <a ng-click="resetDuplicateDiseaseName()"> click to clear</a>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <div class="control-group" ng-class="{error: myForm.selectedDisease.diseaseName.$invalid}">
+                    <label>Disease Name
+                    </label>
+
+                    <input type="text" name="diseaseName" ng-model="selectedDisease.diseaseName" required>
+
+                    <span ng-show="myForm.selectedDisease.diseaseName.$error" class="help-inline">
+                                                                                Required</span>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Alias Names -->
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Alias Names<a ng-click="addAliasNameField()"><i class="foundicon-plus"></i></a>
+                </label>
+
+                <div ng-show="duplicateAliasNames.length > 0">
+                    <label class="error">Duplicate disease name(s)
+                        <a ng-click="clearDuplicateAliasDiseaseName()">
+                            -- click to clear</a>
+                    </label>
+                </div>
+                <div ng-repeat="dup in duplicateAliasNames track by $index">
+                    <li>{{dup}}</li>
+                </div>
+
+                <br/>
+
+            </div>
+
+            <div ng-repeat="aliasName in selectedDisease.aliasNames track by $index">
+                <div class="small-10 columns">
+                    <input type="text" id="ans-{{$index}}" name="ans-{{$index}}"
+                           ng-model="selectedDisease.aliasNames[$index]"/>
+                </div>
+                <div class="small-2 columns">
+                    <a ng-click="deleteAliasNameField($index)"><i class="foundicon-minus"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- End Alias Names -->
+
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <!--
+        <div ng-repeat="assessmentValue in selectedDisease.assessmentValues track by $index">
+            <div class="small-12 columns">
+                {{assessmentValue.id}}
+                {{assessmentValue.assessmentId}}
+                {{assessmentValue.operator}}
+                {{assessmentValue.value}}
+            </div>
+        </div>
+        -->
+        <p>
+        <div class="row">
+            <div class="small-12 columns">
+                <input type="text" ng-model="search" class="search-query" placeholder="Assessment search"/>
+            </div>
+        </div>
+        </p>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+                <div ng-repeat="assessment in assessments | filter:search | orderBy:'assessmentName'">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="cb-{{$index}}"/>
+                                <input type="hidden" id="ass-{{$index}}" value="{{assessment.id}}"/>
+                            </td>
+                            <td>
+                                <label>{{assessment.assessmentName}}</label>
+                            </td>
+                            <td>
+                                <select id="sel-{{$index}}">
+                                    <option value="na">N/A</option>
+                                    <option value="eq">=</option>
+                                    <option value="lt">&lt;</option>
+                                    <option value="gt">&gt;</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" id="in-{{$index}}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                        || isDuplicateDiseaseName
+                                                                        || isDuplicateAliasDiseaseName"
+                        class="btn btn-primary">Save</button>
+
+            </div>
+        </div>
+    </form>
+    <!-- used to fire foo() only -->
+    <span ng-show="foo()"></span>
+</div>

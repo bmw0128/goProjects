@@ -1,0 +1,82 @@
+
+<div ng-show="isAdmin">
+
+    <p>
+        <button type="button" class="tiny" ng-click="save()">
+            save
+        </button>
+    </p>
+
+    <div class="row" ng-show="isMissingData">
+        <div class="small-12 columns">
+            <label class="error">Missing data for selected drug(s)</label>
+        </div>
+    </div>
+
+    <p>
+        <label>
+            Selected Drug: {{selectedDrug.drugName}}
+        </label>
+    </p>
+
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            <input type="text" ng-model="search" class="search-query" placeholder="Search"/>
+        </div>
+    </div>
+    </p>
+
+    <form name="myForm" novalidate>
+    <table class="listingTable">
+
+        <thead>
+        <tr>
+            <th>Drug</th>
+            <th>Level of Severity</th>
+            <th>Summary of Interaction</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="drug in drugs | filter:search | orderBy:'drugName'">
+            <td class="checkBoxCell">
+
+            <input
+                    type="checkbox"
+                    name="selectedDrugs[]"
+                    value="{{drug.drugName}}"
+                    ng-checked="selection.indexOf(drug.drugName) > -1"
+                    ng-click="toggleSelection(drug.drugName)"
+                    > {{drug.drugName}}
+
+            </td>
+            <td class="selectBoxCell">
+
+                    <select ng-class="{redBorderImportant: severityLevelError[$index]}"
+                                                                name="severityLevel-{{drug.drugName}}"
+                                                                id="severityLevel-{{drug.drugName}}">
+
+                        <option value=""></option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="X">X</option>
+                    </select>
+
+            </td>
+
+            <td class="summaryFieldCell">
+
+                <input ng-class="{redBorderImportant: summaryError[$index]}" type="text"
+                                                                name="summary-{{drug.drugName}}"
+                                                                id="summary-{{drug.drugName}}"/>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    </form>
+
+</div>

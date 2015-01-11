@@ -1,0 +1,31 @@
+.listingTable {
+    max-width:320px;
+    table-layout: fixed;
+    word-wrap:break-word;
+}
+
+.listingTable .nameCell {
+    max-width: 220px;
+
+}
+
+.listingTable .actionCell {
+    max-width: 30px;
+
+}
+
+.listingTable .checkBoxCell {
+    max-width: 30px;
+
+}
+
+.listingTable .selectBoxCell {
+    max-width: 52px;
+
+}
+
+.listingTable .summaryFieldCell {
+
+    max-width: 150px;
+
+}

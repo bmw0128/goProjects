@@ -1,0 +1,52 @@
+application: bmwpharm
+version: 1
+runtime: go
+api_version: go1
+
+handlers:
+
+  - url: /_ah/remote_api
+    script: _go_app
+    login: admin
+
+  - url: /rest/.*
+    script: _go_app
+    login: required
+    auth_fail_action: unauthorized
+
+  - url: /
+    static_files: frontend/index.html
+    upload: frontend/index.html
+    login: required
+    mime_type: text/html; charset=utf-8
+
+  - url: /frontend/vendor
+    static_dir: frontend/vendor
+
+  - url: /frontend/partials
+    static_dir: frontend/partials
+
+  - url: /frontend/partials/admin
+    static_dir: frontend/partials/admin
+    login: admin
+
+  - url: /frontend/partials/patient
+    static_dir: frontend/partials/patient
+
+  - url: /frontend/css
+    static_dir: frontend/css
+
+  - url: /frontend/app
+    static_dir: frontend/app
+
+  - url: /frontend/js
+    static_dir: frontend/js
+
+  - url: /frontend/fonts
+    static_dir: frontend/fonts
+
+  - url: /frontend/stylesheets
+    static_dir: frontend/stylesheets
+
+  - url: /frontend/bower_components
+    static_dir: frontend/bower_components

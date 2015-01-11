@@ -1,0 +1,40 @@
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            <input type="text" ng-model="search" class="search-query" placeholder="Search"/>
+        </div>
+    </div>
+    </p>
+
+    <div class="row">
+        <div class="small-12 columns">
+
+            <table class="listingTable">
+
+                <thead>
+                <tr>
+                    <th>Drugs <a href="#/admin/drugManagement/new">
+                        <i class="foundicon-plus"></i></a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="drug in drugs | filter:search | orderBy:'drugName'">
+                    <td class="nameCell">
+                        <a href="#/admin/drugManagement/detail/{{drug.id}}">{{drug.drugName}}</a>
+                        <div>{{listBrandNames(drug.brandNames)}}</div>
+                    </td>
+                    <td class="actionCell">
+                        <a href="#/admin/drugManagement/edit/{{drug.id}}"><i class="foundicon-edit"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

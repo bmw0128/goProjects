@@ -1,0 +1,42 @@
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            <input type="text" ng-model="search" class="search-query" placeholder="Search"/>
+        </div>
+    </div>
+    </p>
+
+    <div class="row">
+        <div class="small-12 columns">
+
+            <table class="listingTable">
+
+                <thead>
+                <tr>
+                    <th>Assessment <a href="#/admin/assessmentManagement/new">
+                        <i class="foundicon-plus"></i></a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="assessment in assessments | filter:search | orderBy:'assessmentName'">
+                    <td class="nameCell">
+                        <a href="#/admin/assessmentManagement/detail/{{assessment.id}}">{{assessment.assessmentName}}</a>
+
+                        <div>{{listAliasNames(assessment.aliasNames)}}</div>
+
+                    </td>
+                    <td class="actionCell">
+                        <a href="#/admin/assessmentManagement/edit/{{assessment.id}}"><i class="foundicon-edit"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

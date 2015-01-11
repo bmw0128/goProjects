@@ -1,0 +1,24 @@
+<div ng-show="roles.indexOf('admin') > -1">
+<form name="myForm">
+    <div class="control-group" ng-class="{error: myForm.drugName.$invalid}">
+        <label>Client Email</label>
+        <input type="text" name="clientEmail" ng-model="client.email" required>
+          <span ng-show="myForm.clientEmail.$error" class="help-inline">
+                                                        Required</span>
+        <label>Role</label>
+        <select name="clientRole" ng-model="client.role" required>
+            <option ng-repeat="role in roleOptions" value="{{role.name}}"
+                                ng-selected="client.role == role.name">{{role.name}}
+        </select>
+        <span ng-show="myForm.clientRole.$error" class="help-inline">
+                                                        Required</span>
+    </div>
+
+    <br>
+    <a href="#/admin/clientManagement" class="btn">Cancel</a>
+    <button ng-click="save()" ng-disabled="isClean() || myForm.$invalid"
+            class="btn btn-primary">Save</button>
+    <button ng-click="destroy()" ng-show="client.email"
+            class="btn btn-danger">Delete</button>
+</form>
+</div>
