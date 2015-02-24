@@ -232,38 +232,25 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
         }
 
     };
-
-    $scope.foo= function(){
-        /*
-        for(var i=0; $scope.assessments.length; i++){
-            console.log("*** ass id: " + JSON.stringify($scope.assessments[i]));
-        }
-        */
-
-        for(var i=0; i < $scope.selectedDisease.assessmentValues.length; i++){
-            //console.log("*** sel asses: " + JSON.stringify($scope.selectedDisease.assessmentValues[i]));
-            var outerAssessmentId= $scope.selectedDisease.assessmentValues[i].assessmentId;
-            for(var j=0; j < $scope.assessments.length; j++){
-                var innerAssessmentId= $scope.assessments[j].id;
-                if(outerAssessmentId === innerAssessmentId){
-                    var cbId= "cb-" + j;
-                    var inId= "#in-" + j;
-                    var selId= "#sel-" + j;
-                    document.getElementById(cbId).checked= true;
-                    $(selId).val($scope.selectedDisease.assessmentValues[i].operator);
-                    //document.getElementById(inId).value= $scope.selectedDisease.assessmentValues[i].value;
-                    $(inId).val($scope.selectedDisease.assessmentValues[i].value);
-                    break;
+    $scope.pageLoaded= function() {
+            for (var i = 0; i < $scope.selectedDisease.assessmentValues.length; i++) {
+                var outerAssessmentId = $scope.selectedDisease.assessmentValues[i].assessmentId;
+                for (var j = 0; j < $scope.assessments.length; j++) {
+                    var assId = "ass-" + j;
+                    var assessmentValue= document.getElementById(assId).value;
+                    if (outerAssessmentId === assessmentValue) {
+                        var cbId = "cb-" + j;
+                        var inId = "#in-" + j;
+                        var selId = "#sel-" + j;
+                        document.getElementById(cbId).checked = true;
+                        $(selId).val($scope.selectedDisease.assessmentValues[i].operator);
+                        $(inId).val($scope.selectedDisease.assessmentValues[i].value);
+                        break;
+                    }
                 }
             }
-        }
-        //console.log("*** loaded...");
-        //console.log(document.getElementById("cb-0"));
-        //document.getElementById("cb-0").checked= true;
-        //document.getElementById("in-0").value= "000";
-
-        return false;
-    };
+            return false;
+        };
 }
 
 function DiseaseListCtrl($scope, Restangular, printingService) {
@@ -398,6 +385,7 @@ function DiseaseNewCtrl($scope, Restangular, $location, $http){
                 function (disease) {
                     $location.path('/admin/diseaseManagement');
                 });
+
         }
     };
 
