@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"encoding/json"
 	"strconv"
+	"sort"
+	"strings"
 	"github.com/gorilla/mux"
 	"github.com/icub3d/gorca"
 	"github.com/bmw0128/bmwpharm/clients"
@@ -45,6 +47,11 @@ type Assessment struct {
 	Name string `json:"assessmentName"`
 	AliasNames []string `json:"aliasNames"`
 }
+
+type ByName []Assessment
+func (a ByName) Len() int           { return len(a) }
+func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool { return strings.ToLower(a[i].Name) < strings.ToLower(a[j].Name) }
 
 func EditAssessment(w http.ResponseWriter, r *http.Request){
 
@@ -169,6 +176,7 @@ func GetAssessments(w http.ResponseWriter, r *http.Request) {
 			id := strconv.FormatInt(key.IntID(), 10)
 			assessments[idx].Id= id
 		}
+		sort.Sort(ByName(assessments))
 		gorca.WriteJSON(c, w, r, assessments)
 	}else{
 		gorca.WriteJSON(c, w, r, http.StatusNotFound)
