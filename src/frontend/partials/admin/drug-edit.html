@@ -154,10 +154,10 @@
                                                                         || isDuplicateDrugName
                                                                         || isDuplicateBrandDrugName"
                                                             class="btn btn-primary">Save</button>
-                <!--
-                <button class="tiny" ng-click="destroy()" ng-show="selectedDrug.drugName"
-                                                            class="btn btn-danger">Delete</button>
-                -->
+                <button class="tiny" ng-click="delete()" ng-disabled="isClean() || myForm.$invalid
+                                                                        || isDuplicateDrugName
+                                                                        || isDuplicateBrandDrugName"
+                        class="btn btn-primary">Delete</button>
             </div>
         </div>
     </form>
