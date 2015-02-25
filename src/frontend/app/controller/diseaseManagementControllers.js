@@ -138,7 +138,7 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
     $scope.isDuplicateAliasDiseaseName= false;
 
     $scope.resetDuplicateDiseaseName= function(){
-        $scope.isDuplicateDisaseName= false;
+        $scope.isDuplicateDiseaseName= false;
         $scope.selectedDisease.diseaseName= originalDiseaseName;
     };
 
@@ -146,6 +146,7 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
 
         //console.log("*** original name: " + originalDiseaseName);
         //console.log("*** new name: " + $scope.selectedDisease.diseaseName);
+        //console.log("*** saving: " + JSON.stringify($scope.selectedDisease));
 
         if(originalDiseaseName != $scope.selectedDisease.diseaseName) {
 
@@ -223,8 +224,16 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
                         &&!$scope.isDuplicateAliasDiseaseName){
 
             //console.log("*** saving: " + JSON.stringify($scope.selectedDisease));
-
+            var s = getEditDiseaseJSONPOST($scope);
+            //console.log("*** s in edit: " + JSON.stringify(s));
+            /*
             Restangular.all('diseases/edit').post($scope.selectedDisease).then(
+                function() {
+                    $location.path('/admin/diseaseManagement');
+                });
+            */
+
+             Restangular.all('diseases/edit').post(s).then(
                 function() {
                     $location.path('/admin/diseaseManagement');
                 });
@@ -251,6 +260,31 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
             }
             return false;
         };
+}
+
+function getAssessmentValues($scope){
+
+    var assessmentArray= [];
+    for (var j = 0; j < $scope.assessments.length; j++) {
+        //var assId = "ass-" + j;
+        //var assessmentValue= document.getElementById(assId).value;
+        //if (outerAssessmentId === assessmentValue) {
+            var cbId = "cb-" + j;
+            var inId = "#in-" + j;
+            var selId = "#sel-" + j;
+            //console.log("*** cb[ " + j + "] checked: " + document.getElementById(cbId).checked);
+            if(document.getElementById(cbId).checked){
+                console.log("*** sel: " + $(selId).val());
+                console.log("*** in: " + $(inId).val());
+            }
+
+            //document.getElementById(cbId).checked = true;
+            //$(selId).val($scope.selectedDisease.assessmentValues[i].operator);
+            //$(inId).val($scope.selectedDisease.assessmentValues[i].value);
+            //break;
+        //}
+    }
+
 }
 
 function DiseaseListCtrl($scope, Restangular, printingService) {
@@ -312,7 +346,6 @@ function DiseaseNewCtrl($scope, Restangular, $location, $http){
         if(allExistingDiseaseNames.indexOf(diseaseName.toLowerCase()) > -1)
             $scope.isDuplicateDiseaseName= true;
     };
-
 
     var duplicateAliasDiseaseNames= [];
     $scope.duplicateAliasDiseaseNames= duplicateAliasDiseaseNames;
@@ -385,7 +418,6 @@ function DiseaseNewCtrl($scope, Restangular, $location, $http){
                 function (disease) {
                     $location.path('/admin/diseaseManagement');
                 });
-
         }
     };
 
@@ -403,6 +435,15 @@ function getDiseaseJSONPOST($scope){
     return {"diseaseName":nameOfDisease.toLowerCase(),
                 "aliasNames": aliasNamesArray,
                 "assessments": assessmentMap};
+}
+
+function getEditDiseaseJSONPOST($scope){
+
+    return {"id":$scope.selectedDisease.id,
+            "diseaseName":$scope.selectedDisease.diseaseName.toLowerCase(),
+            "aliasNames":$scope.selectedDisease.aliasNames,
+            "assessmentValues":getAssessmentMap($scope)
+            };
 }
 
 function getAssessmentMap($scope){
