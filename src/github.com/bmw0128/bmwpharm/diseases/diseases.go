@@ -27,6 +27,7 @@ func MakeMuxer(prefix string) http.Handler {
 
 	m.HandleFunc("/", GetDiseases).Methods("GET")
 	m.HandleFunc("/{id}/", GetDiseaseById).Methods("GET")
+	m.HandleFunc("/{id}/", DeleteDisease).Methods("DELETE")
 	m.HandleFunc("/new", CreateDisease).Methods("POST")
 	m.HandleFunc("/edit", EditDisease).Methods("POST")
 
@@ -98,7 +99,7 @@ func EditDisease(w http.ResponseWriter, r *http.Request){
 				var assessmentValues []AssessmentValue
 				assessmentValuesKeys, error := q.GetAll(c, &assessmentValues)
 				if error != nil {
-					c.Errorf("error fetching AssessmentValue: %v", error)
+					c.Errorf("error fetching AssessmentValue in EditDisease: %v", error)
 					return error
 				}
 				//delete all AssessmentsValues first
@@ -118,7 +119,7 @@ func EditDisease(w http.ResponseWriter, r *http.Request){
 					assessmentValue := &AssessmentValue{AssessmentId: av.AssessmentId, Operator: av.Operator, Value: av.Value}
 					_, err := datastore.Put(c, newAssessmentValueKey, assessmentValue)
 					if err != nil {
-						c.Errorf("*** error saving a new AssessmentValue: %v", err)
+						c.Errorf("*** error saving a new AssessmentValue in EditDisease: %v", err)
 						http.Error(w, err.Error(), http.StatusInternalServerError)
 						return err
 					}
@@ -127,7 +128,58 @@ func EditDisease(w http.ResponseWriter, r *http.Request){
 			return err
 			}, nil)
 		if err != nil {
-			c.Errorf("Transaction failed: %v", err)
+			c.Errorf("Transaction failed in EditDisease: %v", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+
+	}
+}
+
+func DeleteDisease(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		diseaseKey := datastore.NewKey(c, "Disease", "", entity_id_int, nil)
+
+		err := datastore.RunInTransaction(c, func(c appengine.Context) error {
+
+				q := datastore.NewQuery("AssessmentValue").Ancestor(diseaseKey)
+				var assessmentValues []AssessmentValue
+				assessmentValuesKeys, error := q.GetAll(c, &assessmentValues)
+				if error != nil {
+					c.Errorf("error fetching AssessmentValue in DeleteDisease: %v", error)
+					return error
+				}
+				//delete all AssessmentsValues first
+				for i, _ := range assessmentValues {
+					assessmentValueKey := assessmentValuesKeys[i]
+					err := datastore.Delete(c, assessmentValueKey)
+					if err != nil{
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return err
+					}
+				}
+				//delete the disease
+				err := datastore.Delete(c, diseaseKey)
+				if err != nil{
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return err
+				}
+
+				return err
+			}, nil)
+		if err != nil {
+			c.Errorf("Transaction failed  in DeleteDisease: %v", err)
 			http.Error(w, "Internal Server Error", 500)
 			return
 		}
@@ -163,7 +215,7 @@ func GetDiseaseById(w http.ResponseWriter, r *http.Request) {
 				var assessmentValues []AssessmentValue
 				assessmentValuesKeys, error := q.GetAll(c, &assessmentValues)
 				if error != nil {
-					c.Errorf("error fetching AssessmentValue: %v", error)
+					c.Errorf("error fetching AssessmentValue in GetDiseaseById: %v", error)
 					break
 				}
 
@@ -180,7 +232,7 @@ func GetDiseaseById(w http.ResponseWriter, r *http.Request) {
 				break // No further entities match the query.
 			}
 			if err != nil {
-				c.Errorf("error fetching next Disease: %v", err)
+				c.Errorf("error fetching next Disease in GetDiseaseById: %v", err)
 				break
 			}
 		}
