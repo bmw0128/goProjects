@@ -70,7 +70,7 @@ app.config(function($routeProvider, RestangularProvider) {
                     var theRoute= 'drugs/' + $route.current.params.id + '/';
                     //return Restangular.one(theRoute).get();
                     var s= Restangular.one(theRoute).get();
-                    console.log("*** s drug: " + s);
+                    //console.log("*** s drug: " + s);
                     return s;
                 }
             }
