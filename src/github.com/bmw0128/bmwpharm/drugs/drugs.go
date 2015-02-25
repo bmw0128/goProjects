@@ -60,6 +60,7 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/", GetDrugs).Methods("GET")
 	m.HandleFunc("/byname/{drugName}/", GetDrugByName).Methods("GET")
 	m.HandleFunc("/{id}/", GetDrugById).Methods("GET")
+	m.HandleFunc("/{id}/", DeleteDrug).Methods("DELETE")
 	m.HandleFunc("/withinteractions/{id}/", GetDrugWithInteractionsById).Methods("GET")
 	m.HandleFunc("/new", CreateDrug).Methods("POST")
 	m.HandleFunc("/edit", EditDrug).Methods("POST")
@@ -72,6 +73,57 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
 
 	return m
+}
+
+func DeleteDrug(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		drugKey := datastore.NewKey(c, "Drug", "", entity_id_int, nil)
+
+		err := datastore.RunInTransaction(c, func(c appengine.Context) error {
+
+				q := datastore.NewQuery("Interaction").Ancestor(drugKey)
+				var interactions []Interaction
+				interactionKeys, error := q.GetAll(c, &interactions)
+				if error != nil {
+					c.Errorf("error fetching Interaction in DeleteDrug: %v", error)
+					return error
+				}
+				//delete all Interactions first
+				for i, _ := range interactionKeys {
+
+					interactionKey := interactionKeys[i]
+					err := datastore.Delete(c, interactionKey)
+					if err != nil{
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return err
+					}
+				}
+				//delete the drug
+				err := datastore.Delete(c, drugKey)
+				if err != nil{
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return err
+				}
+				return err
+			}, nil)
+		if err != nil {
+			c.Errorf("Transaction failed  in DeleteDrug: %v", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+
+	}
 }
 
 func DeleteInteractions(w http.ResponseWriter, r *http.Request) {
