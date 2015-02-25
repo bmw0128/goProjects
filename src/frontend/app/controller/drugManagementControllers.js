@@ -486,6 +486,13 @@ function DrugEditCtrl($scope, $location, Restangular, drug, $filter, $http){
 
     };
 
+    $scope.delete= function(){
+
+        Restangular.one('drugs/' + $scope.selectedDrug.id + "/").remove().then(
+            function() {
+                $location.path('/admin/drugManagement');
+            });
+    };
 
 }
 
