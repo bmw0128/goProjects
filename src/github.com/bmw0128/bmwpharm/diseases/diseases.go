@@ -123,6 +123,7 @@ func GetDiseaseById(w http.ResponseWriter, r *http.Request) {
 
 		for {
 			_, err := t.Next(&result)
+			result.Id= stringId
 			if err == datastore.Done {
 
 				q := datastore.NewQuery("AssessmentValue").Ancestor(key)
