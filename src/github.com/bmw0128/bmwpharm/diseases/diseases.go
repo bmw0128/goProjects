@@ -25,11 +25,6 @@ func MakeMuxer(prefix string) http.Handler {
 		m = mux.NewRouter().PathPrefix(prefix).Subrouter()
 	}
 
-	// Add the handler for GET /.
-	//m.HandleFunc("/", Load).Methods("GET")
-	//m.HandleFunc("/{key}/", GetDisease).Methods("GET")
-	//m.HandleFunc("/", GetDiseases2).Methods("GET")
-
 	m.HandleFunc("/", GetDiseases).Methods("GET")
 	m.HandleFunc("/{id}/", GetDiseaseById).Methods("GET")
 	m.HandleFunc("/new", CreateDisease).Methods("POST")
@@ -86,19 +81,57 @@ func EditDisease(w http.ResponseWriter, r *http.Request){
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&theDisease)
 
-		//stringId := vars["id"]
-		stringId := theDisease.Id;
-		//c.Infof("*** stringId: %v", stringId)
-		//c.Infof("**** theDrug: %v", theDrug);
+		stringId := theDisease.Id
 
 		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
 		key := datastore.NewKey(c, "Disease", "", entity_id_int, nil)
+		//put in a transaction since may be updating disease name and assessment values
+		err := datastore.RunInTransaction(c, func(c appengine.Context) error {
 
-		_, err := datastore.Put(c, key, &theDisease)
+				_, err := datastore.Put(c, key, &theDisease)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return err
+				}
+
+				q := datastore.NewQuery("AssessmentValue").Ancestor(key)
+				var assessmentValues []AssessmentValue
+				assessmentValuesKeys, error := q.GetAll(c, &assessmentValues)
+				if error != nil {
+					c.Errorf("error fetching AssessmentValue: %v", error)
+					return error
+				}
+				//delete all AssessmentsValues first
+				for i, _ := range assessmentValues {
+					assessmentValueKey := assessmentValuesKeys[i]
+					err := datastore.Delete(c, assessmentValueKey)
+					if err != nil{
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return err
+					}
+				}
+				//add the new/edited AssessmentValues from the 'edit' page
+				newAssessmentValueKey := datastore.NewIncompleteKey(c, "AssessmentValue", key)
+
+				for _, av := range theDisease.AssessmentValues {
+
+					assessmentValue := &AssessmentValue{AssessmentId: av.AssessmentId, Operator: av.Operator, Value: av.Value}
+					_, err := datastore.Put(c, newAssessmentValueKey, assessmentValue)
+					if err != nil {
+						c.Errorf("*** error saving a new AssessmentValue: %v", err)
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return err
+					}
+				}
+
+			return err
+			}, nil)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			c.Errorf("Transaction failed: %v", err)
+			http.Error(w, "Internal Server Error", 500)
 			return
 		}
+
 	}
 }
 
@@ -153,38 +186,6 @@ func GetDiseaseById(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-/*
-func GetDrugByField(c appengine.Context, drugName string, nameProperty string) Drug{
-
-	q := datastore.NewQuery("Drug").Filter(nameProperty + "=", strings.ToLower(drugName))
-	t := q.Run(c)
-	var result Drug
-
-	for {
-		key, err := t.Next(&result)
-		if err == datastore.Done {
-			break // No further entities match the query.
-		}
-		if err != nil {
-			c.Errorf("Fetching next Drug: %v", err)
-			break
-		}
-		q := datastore.NewQuery("Interaction").Ancestor(key)
-		var interactions []Interaction
-		_, error := q.GetAll(c, &interactions)
-		if error != nil {
-			c.Errorf("Fetching Drug: %v", error)
-			break
-		}
-		//c.Infof("*** interactions %v", interactions)
-		result.Interactions= interactions
-		// Do something with Person p and Key k
-		//c.Infof("*** client role: " + client.Role)
-	}
-	return result
-}
-*/
-
 
 func CreateDisease(w http.ResponseWriter, r *http.Request){
 
@@ -239,7 +240,6 @@ func CreateDisease(w http.ResponseWriter, r *http.Request){
 
 		}
 
-
 		/*testing
 		bytes, _ := ioutil.ReadAll(r.Body)
 		c.Infof("*** disease bytes: " + string(bytes));
@@ -249,7 +249,6 @@ func CreateDisease(w http.ResponseWriter, r *http.Request){
 	}
 
 }
-
 
 func GetDiseases(w http.ResponseWriter, r *http.Request) {
 
@@ -275,48 +274,34 @@ func GetDiseases(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
-// error response contains everything we need to use http.Error
 /*
-type handlerError struct {
-	Error   error
-	Message string
-	Code    int
+func GetDrugByField(c appengine.Context, drugName string, nameProperty string) Drug{
+
+	q := datastore.NewQuery("Drug").Filter(nameProperty + "=", strings.ToLower(drugName))
+	t := q.Run(c)
+	var result Drug
+
+	for {
+		key, err := t.Next(&result)
+		if err == datastore.Done {
+			break // No further entities match the query.
+		}
+		if err != nil {
+			c.Errorf("Fetching next Drug: %v", err)
+			break
+		}
+		q := datastore.NewQuery("Interaction").Ancestor(key)
+		var interactions []Interaction
+		_, error := q.GetAll(c, &interactions)
+		if error != nil {
+			c.Errorf("Fetching Drug: %v", error)
+			break
+		}
+		//c.Infof("*** interactions %v", interactions)
+		result.Interactions= interactions
+		// Do something with Person p and Key k
+		//c.Infof("*** client role: " + client.Role)
+	}
+	return result
 }
 */
-//end from docs.go
-
-// GetDisease fetches the disease
-/*
-func GetDisease(w http.ResponseWriter, r *http.Request) {
-
-	c := appengine.NewContext(r)
-
-	//Get the Key.
-	vars := mux.Vars(r)
-	key := vars["key"]
-	c.Infof("*** key: " + key)
-}
-*/
-
-func Load(w http.ResponseWriter, r *http.Request){
-
-	//log.Println("**** a ");
-	/*
-	aDisease := Disease{
-		Name:     "Essential Hypertension",
-		Stage1HTN: m["1Tx"]:m["Primary"]:"hydrochlorothiazide : 12.5 to 50 mg orally once daily",
-	}
-
-	key := datastore.NewIncompleteKey(c, "disease", nil)
-	_, err := datastore.Put(c, key, &aDisease)
-
-	//key, err := datastore.Put(c, datastore.NewIncompleteKey(c, "disease", nil), &aDisease)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	*/
-
-}
