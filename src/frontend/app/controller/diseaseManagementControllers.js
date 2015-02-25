@@ -241,6 +241,16 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
         }
 
     };
+
+    $scope.delete= function(){
+
+        Restangular.one('diseases/' + $scope.selectedDisease.id + "/").remove().then(
+            function() {
+                $location.path('/admin/diseaseManagement');
+            });
+    };
+
+
     $scope.pageLoaded= function() {
             for (var i = 0; i < $scope.selectedDisease.assessmentValues.length; i++) {
                 var outerAssessmentId = $scope.selectedDisease.assessmentValues[i].assessmentId;
