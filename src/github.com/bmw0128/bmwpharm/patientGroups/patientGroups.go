@@ -5,14 +5,15 @@ import (
 	"appengine/datastore"
 	"appengine/user"
 	"net/http"
-	//"encoding/json"
+	"encoding/json"
 	"strconv"
+	"io/ioutil"
 	"github.com/gorilla/mux"
 	"github.com/icub3d/gorca"
 	"github.com/bmw0128/bmwpharm/clients"
-	//"github.com/bmw0128/bmwpharm/diseases"
+	"github.com/bmw0128/bmwpharm/diseases"
 )
-
+/*
 type PatientGroup struct {
 	Id string `json:"id"`
 	Name string
@@ -25,7 +26,23 @@ type PatientGroup struct {
 	Systolic int
 	Diastolic int
 	EjectionFractionPercentage int
-	NYHAClass int //1, 2,3 or 4
+	NYHAClass int //1, 2, 3 or 4
+}
+*/
+type PatientGroup struct{
+	Id string `json:"id"`
+	Name string `json:"patientGroupName"`
+	ParentGroup *PatientGroup `json:"parentGroup"`
+	SubGroup *PatientGroup `json:"subGroup"`
+	AssessmentValues []diseases.AssessmentValue `json:"assessmentValues"`
+}
+
+type PatientGroupTemp struct {
+	Id string `json:"id"`
+	Name string `json:"diseaseName"`
+	ParentGroup PatientGroup `json:"parentGroup"`
+	SubGroup PatientGroup `json:"subGroup"`
+	AssessmentValues []map[string]string `json:"assessments"`
 }
 
 func MakeMuxer(prefix string) http.Handler {
@@ -46,13 +63,76 @@ func MakeMuxer(prefix string) http.Handler {
 
 	m.HandleFunc("/", GetPatientGroups).Methods("GET")
 	//m.HandleFunc("/{id}/", GetDiseaseById).Methods("GET")
-	//m.HandleFunc("/new", CreateDisease).Methods("POST")
+	m.HandleFunc("/new", CreatePatientGroup).Methods("POST")
 	//m.HandleFunc("/edit", EditDisease).Methods("POST")
 
 	// Everything else should 404.
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
 
 	return m
+}
+
+func CreatePatientGroup(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	if(!clients.ClientIsAdmin(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusNotFound)
+	}else {
+
+		defer r.Body.Close()
+		var patientGroupTemp PatientGroupTemp
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&patientGroupTemp)
+
+		/*
+		disease := &Disease{Name: diseaseTemp.Name, AliasNames: diseaseTemp.AliasNames}
+
+		newDiseaseKey, err := datastore.Put(c, datastore.NewIncompleteKey(c, "Disease", nil), disease)
+		if err != nil {
+			c.Errorf("*** error saving Disease: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		newAssessmentValueKey := datastore.NewIncompleteKey(c, "AssessmentValue", newDiseaseKey)
+
+		//'val' is a map
+		for _, val := range diseaseTemp.AssessmentValues {
+			var assessmentId string
+			var operator string
+			var value string
+			for aKey, _ := range val{
+				if(aKey == "assessmentId"){
+					assessmentId= val[aKey]
+				}else if(aKey == "operator"){
+					operator= val[aKey]
+				}else if(aKey == "value"){
+					value = val[aKey]
+				}
+			}
+			assessmentValue := &AssessmentValue{AssessmentId: assessmentId, Operator: operator, Value: value}
+
+			_, err := datastore.Put(c, newAssessmentValueKey, assessmentValue)
+			if err != nil {
+				c.Errorf("*** error saving a new AssessmentValue: %v", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+		}
+		*/
+		//testing
+		bytes, _ := ioutil.ReadAll(r.Body)
+		c.Infof("*** disease bytes: " + string(bytes));
+		//end testing
+
+
+	}
+
 }
 
 func GetPatientGroups(w http.ResponseWriter, r *http.Request) {

@@ -33,6 +33,7 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/", GetAssessments).Methods("GET")
 
 	m.HandleFunc("/{id}/", GetAssessmentById).Methods("GET")
+	m.HandleFunc("/{id}/", DeleteAssessment).Methods("DELETE")
 	m.HandleFunc("/new", CreateAssessment).Methods("POST")
 	m.HandleFunc("/edit", EditAssessment).Methods("POST")
 
@@ -180,5 +181,39 @@ func GetAssessments(w http.ResponseWriter, r *http.Request) {
 		gorca.WriteJSON(c, w, r, assessments)
 	}else{
 		gorca.WriteJSON(c, w, r, http.StatusNotFound)
+	}
+}
+
+func DeleteAssessment(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		assessmentKey := datastore.NewKey(c, "Assessment", "", entity_id_int, nil)
+
+		err := datastore.RunInTransaction(c, func(c appengine.Context) error {
+
+				//delete the Assessment
+				err := datastore.Delete(c, assessmentKey)
+				if err != nil{
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return err
+				}
+				return err
+			}, nil)
+		if err != nil {
+			c.Errorf("Transaction failed  in DeleteAssessment: %v", err)
+			http.Error(w, "Internal Server Error", 500)
+			return
+		}
+
 	}
 }
