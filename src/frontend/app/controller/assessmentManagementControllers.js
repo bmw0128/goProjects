@@ -54,13 +54,13 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
 
     $scope.selectedAssessment = assessment;
 
-    var originalAssessmentName= $scope.selectedAssessment.assessmentName;
+    var originalAssessmentName= $scope.selectedAssessment.assessmentName.toLowerCase();
     var originalSortedAliasNames= [];
 
     if($scope.selectedAssessment.aliasNames != undefined) {
         $scope.selectedAssessment.aliasNames.sort();
         for (var i = 0; i < $scope.selectedAssessment.aliasNames.length; i++){
-            originalSortedAliasNames.push($scope.selectedAssessment.aliasNames[i]);
+            originalSortedAliasNames.push($scope.selectedAssessment.aliasNames[i].toLowerCase());
         }
     }
 
@@ -70,19 +70,19 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
             $scope.assessments = assessments;
 
             for(var i=0; i < $scope.assessments.length; i++){
-                allExistingAssessmentNames.push($scope.assessments[i].assessmentName);
+                allExistingAssessmentNames.push($scope.assessments[i].assessmentName.toLowerCase());
                 if($scope.assessments[i].aliasNames != undefined){
                     for(var j=0; j < $scope.assessments[i].aliasNames.length; j++){
-                        allExistingAssessmentNames.push($scope.assessments[i].aliasNames[j]);
+                        allExistingAssessmentNames.push($scope.assessments[i].aliasNames[j].toLowerCase());
                     }
                 }
             }
 
             //take out assessment names from 'allExistingAssessmentNames' that are in the selectedAssessment(main and alias names)
-            var idx= allExistingAssessmentNames.indexOf(originalAssessmentName);
+            var idx= allExistingAssessmentNames.indexOf(originalAssessmentName.toLowerCase());
             allExistingAssessmentNames.splice(idx, 1);
             for(var z= 0; z < originalSortedAliasNames.length; z++){
-                idx= allExistingAssessmentNames.indexOf(originalSortedAliasNames[z]);
+                idx= allExistingAssessmentNames.indexOf(originalSortedAliasNames[z].toLowerCase());
                 allExistingAssessmentNames.splice(idx, 1);
             }
 
@@ -128,7 +128,7 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
 
     $scope.resetDuplicateAssessmentName= function(){
         $scope.isDuplicateAssessmentName= false;
-        $scope.selectedAssessment.assessmentName= originalAssessmentName;
+        $scope.selectedAssessment.assessmentName= originalAssessmentName.toLowerCase();
     };
 
     $scope.save= function(){
@@ -136,7 +136,7 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
         if(originalAssessmentName != $scope.selectedAssessment.assessmentName) {
 
             for(var i=0; i < allExistingAssessmentNames.length; i++){
-                if($scope.selectedAssessment.assessmentName == allExistingAssessmentNames[i]){
+                if($scope.selectedAssessment.assessmentName.toLowerCase() == allExistingAssessmentNames[i].toLowerCase()){
                     $scope.isDuplicateAssessmentName= true;
                     break;
                 }
@@ -153,8 +153,8 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
 
             for(var i=0; i < sortedAliasNames.length; i++) {
                 for (var j = 0; j < allExistingAssessmentNames.length; j++) {
-                    if (sortedAliasNames[i] == allExistingAssessmentNames[j]) {
-                        $scope.duplicateAliasNames.push(sortedAliasNames[i]);
+                    if (sortedAliasNames[i].toLowerCase() == allExistingAssessmentNames[j].toLowerCase()) {
+                        $scope.duplicateAliasNames.push(sortedAliasNames[i].toLowerCase());
                         $scope.isDuplicateAliasAssessmentName = true;
                         break;
                     }
@@ -166,14 +166,14 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
 
             for(var i=0; i < sortedAliasNames.length; i++){
                 if(originalSortedAliasNames[i] != undefined
-                    && (sortedAliasNames[i] != originalSortedAliasNames[i])){
+                    && (sortedAliasNames[i].toLowerCase() != originalSortedAliasNames[i].toLowerCase())){
 
 
                     for(var k=0; k < sortedAliasNames.length; k++) {
                         for (var j = 0; j < allExistingAssessmentNames.length; j++) {
-                            if (sortedAliasNames[k] == allExistingAssessmentNames[j]) {
+                            if (sortedAliasNames[k].toLowerCase() == allExistingAssessmentNames[j].toLowerCase()) {
                                 if($scope.duplicateAliasNames.indexOf(sortedAliasNames[k]) == -1){
-                                    $scope.duplicateAliasNames.push(sortedAliasNames[k]);
+                                    $scope.duplicateAliasNames.push(sortedAliasNames[k].toLowerCase());
                                 }
                                 $scope.isDuplicateAliasAssessmentName = true;
                                 break;
@@ -186,9 +186,9 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
 
                     for(var k=0; k < sortedAliasNames.length; k++) {
                         for (var j = 0; j < allExistingAssessmentNames.length; j++) {
-                            if (sortedAliasNames[k] == allExistingAssessmentNames[j]) {
-                                if($scope.duplicateAliasNames.indexOf(sortedAliasNames[k]) == -1){
-                                    $scope.duplicateAliasNames.push(sortedAliasNames[k]);
+                            if (sortedAliasNames[k].toLowerCase() == allExistingAssessmentNames[j].toLowerCase()) {
+                                if($scope.duplicateAliasNames.indexOf(sortedAliasNames[k].toLowerCase()) == -1){
+                                    $scope.duplicateAliasNames.push(sortedAliasNames[k].toLowerCase());
                                 }
                                 $scope.isDuplicateAliasAssessmentName = true;
                                 break;
@@ -231,10 +231,10 @@ function AssessmentNewCtrl($scope, Restangular, $location, $http){
             $scope.assessments = assessments;
 
             for(var i=0; i < $scope.assessments.length; i++){
-                allExistingAssessmentNames.push($scope.assessments[i].assessmentName);
+                allExistingAssessmentNames.push($scope.assessments[i].assessmentName.toLowerCase());
                 if($scope.assessments[i].aliasNames != undefined){
                     for(var j=0; j < $scope.assessments[i].aliasNames.length; j++){
-                        allExistingAssessmentNames.push($scope.assessments[i].aliasNames[j]);
+                        allExistingAssessmentNames.push($scope.assessments[i].aliasNames[j].toLowerCase());
                     }
                 }
             }
@@ -264,9 +264,9 @@ function AssessmentNewCtrl($scope, Restangular, $location, $http){
         var id= "ans-" + index;
         var aliasNameOfAssessment= document.getElementById(id).value;
 
-        if(allExistingAssessmentNames.indexOf(aliasNameOfAssessment) > -1) {
-            if ($scope.duplicateAliasAssessmentNames.indexOf(aliasNameOfAssessment) == -1)
-                $scope.duplicateAliasAssessmentNames.push(aliasNameOfAssessment);
+        if(allExistingAssessmentNames.indexOf(aliasNameOfAssessment.toLowerCase()) > -1) {
+            if ($scope.duplicateAliasAssessmentNames.indexOf(aliasNameOfAssessment.toLowerCase()) == -1)
+                $scope.duplicateAliasAssessmentNames.push(aliasNameOfAssessment.toLowerCase());
         }
     };
 
@@ -278,10 +278,10 @@ function AssessmentNewCtrl($scope, Restangular, $location, $http){
         for(var i=0; i<= $scope.aliasNames.length; i++){
             var id= "ans-" + i;
             var aliasNameOfAssessment= document.getElementById(id).value;
-            if($scope.duplicateAliasAssessmentNames.indexOf(aliasNameOfAssessment) > -1){
+            if($scope.duplicateAliasAssessmentNames.indexOf(aliasNameOfAssessment.toLowerCase()) > -1){
                 $scope.aliasNames.splice(i, 1);
             }else{
-                nonDuplicateAliasAssessmentNames.push(aliasNameOfAssessment);
+                nonDuplicateAliasAssessmentNames.push(aliasNameOfAssessment.toLowerCase());
             }
         }
 
