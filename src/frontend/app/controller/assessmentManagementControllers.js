@@ -217,6 +217,14 @@ function AssessmentEditCtrl($scope, $location, Restangular, assessment, $filter,
         }
     };
 
+    $scope.delete= function(){
+
+        Restangular.one('assessments/' + $scope.selectedAssessment.id + "/").remove().then(
+            function() {
+                $location.path('/admin/assessmentManagement');
+            });
+    };
+
 }
 
 function AssessmentDetailCtrl(){
