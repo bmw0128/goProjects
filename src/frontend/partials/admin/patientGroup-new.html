@@ -1,0 +1,91 @@
+<div ng-show="isAdmin">
+    <form name="myForm" novalidate>
+
+        <div class="row" ng-show="isDuplicatePatientGroupName">
+            <div class="small-12 columns">
+                <label class="error">Duplicate Patient Group Name</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label ng-class="{error: myForm.patientGroupName.$invalid}">Patient Group Name
+                    <input type="text" id="patientGroupName" name="patientGroupName"
+                           ng-model="patientGroup.patientGroupName"
+                           ng-focus="resetDuplicatePatientGroupName()"
+                           ng-change="resetDuplicatePatientGroupName()"
+                           ng-mouseleave="checkDuplicatePatientName(patientGroup.patientGroupNameName)"
+                           required/>
+                    <span ng-show="myForm.patientGroupName.$invalid" class="help-inline">
+                                                                    Required</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+
+        <!-- Assessments -->
+        <p>
+        <div class="row">
+            <div class="small-12 columns">
+                <input type="text" ng-model="search" class="search-query" placeholder="Assessment search"/>
+            </div>
+        </div>
+        </p>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+                <div ng-repeat="assessment in assessments | filter:search | orderBy:'assessmentName'">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="cb-{{$index}}"/>
+                                <input type="hidden" id="ass-{{$index}}" value="{{assessment.id}}"/>
+                            </td>
+                            <td>
+                                <label>{{assessment.assessmentName}}</label>
+                            </td>
+                            <td>
+                                <select id="sel-{{$index}}">
+                                    <option value="na">N/A</option>
+                                    <option value="eq">=</option>
+                                    <option value="lt">&lt;</option>
+                                    <option value="lteq">&lt;=</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="gteq">&gt;=</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" id="in-{{$index}}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End Assessments -->
+
+        <div class="row">
+            <div class="small-12 columns">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                                            || isDuplicateAssessmentName
+                                                                                            ">
+                                                                        Save
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>

@@ -74,7 +74,11 @@
                 <button class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
                                                                         || isDuplicateAssessmentName
                                                                         || isDuplicateAliasAssessmentName"
-                        class="btn btn-primary">Save</button>
+                                class="btn btn-primary">Save</button>
+                <button class="tiny" ng-click="delete()" ng-disabled="isClean() || myForm.$invalid
+                                                                        || isDuplicateDiseaseName
+                                                                        || isDuplicateAliasDiseaseName"
+                                class="btn btn-primary">Delete</button>
 
             </div>
         </div>
