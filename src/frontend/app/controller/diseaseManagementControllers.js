@@ -151,7 +151,7 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
         if(originalDiseaseName != $scope.selectedDisease.diseaseName) {
 
             for(var i=0; i < allExistingDiseaseNames.length; i++){
-                if($scope.selectedDisease.diseaseName == allExistingDiseaseNames[i]){
+                if($scope.selectedDisease.diseaseName.toLowerCase() == allExistingDiseaseNames[i].toLowerCase()){
                     $scope.isDuplicateDiseaseName= true;
                     break;
                 }
@@ -226,12 +226,6 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
             //console.log("*** saving: " + JSON.stringify($scope.selectedDisease));
             var s = getEditDiseaseJSONPOST($scope);
             //console.log("*** s in edit: " + JSON.stringify(s));
-            /*
-            Restangular.all('diseases/edit').post($scope.selectedDisease).then(
-                function() {
-                    $location.path('/admin/diseaseManagement');
-                });
-            */
 
              Restangular.all('diseases/edit').post(s).then(
                 function() {

@@ -1,24 +1,30 @@
+
+
 <div ng-show="isAdmin">
-    <form name="myForm" novalidate>
+
+    <form name="myForm">
 
         <div class="row" ng-show="isDuplicatePatientGroupName">
             <div class="small-12 columns">
-                <label class="error">Duplicate Patient Group Name</label>
+
+                <label class="error">Duplicate Patient Group Name --
+                    <a ng-click="resetDuplicatePatientGroupName()"> click to clear</a>
+                </label>
             </div>
         </div>
 
         <div class="row">
             <div class="small-12 columns">
-                <label ng-class="{error: myForm.patientGroupName.$invalid}">Patient Group Name
-                    <input type="text" id="patientGroupName" name="patientGroupName"
-                           ng-model="patientGroup.patientGroupName"
-                           ng-focus="resetDuplicatePatientGroupName()"
-                           ng-change="resetDuplicatePatientGroupName()"
-                           ng-mouseleave="checkDuplicatePatientGroupName(patientGroup.patientGroupNameName)"
-                           required/>
-                    <span ng-show="myForm.patientGroupName.$invalid" class="help-inline">
-                                                                    Required</span>
-                </label>
+                <div class="control-group" ng-class="{error: myForm.selectedPatientGroup.patientGroupName.$invalid}">
+                    <label>Patient Group Name
+                    </label>
+
+                    <input type="text" name="patientGroupName" ng-model="selectedPatientGroup.patientGroupName" required>
+
+                    <span ng-show="myForm.selectedPatientGroup.patientGroupName.$error" class="help-inline">
+                                                                                Required</span>
+                </div>
+
             </div>
         </div>
 
@@ -27,16 +33,6 @@
                 <hr>
             </div>
         </div>
-
-
-        <!-- Assessments -->
-        <p>
-        <div class="row">
-            <div class="small-12 columns">
-                <input type="text" ng-model="search" class="search-query" placeholder="Assessment search"/>
-            </div>
-        </div>
-        </p>
 
         <div class="row" ng-show="hasRangeError">
             <div class="small-12 columns">
@@ -49,6 +45,14 @@
                 <label class="error">Input Number Error</label>
             </div>
         </div>
+
+        <p>
+        <div class="row">
+            <div class="small-12 columns">
+                <input type="text" ng-model="search" class="search-query" placeholder="Assessment search"/>
+            </div>
+        </div>
+        </p>
 
         <div class="row">
             <div class="small-12 columns divTable">
@@ -63,7 +67,7 @@
                                 <label>{{assessment.assessmentName}}</label>
                             </td>
                             <td>
-                                <select id="sel-{{$index}}"> <!-- onchange="clearRangeError($index)"> -->
+                                <select id="sel-{{$index}}">
                                     <option value="na">N/A</option>
                                     <option value="eq">=</option>
                                     <option value="lt">&lt;</option>
@@ -74,23 +78,13 @@
                                 </select>
                             </td>
                             <td>
-                                <!--
-                                <div id="rangeError-{{$index}}" style="display: none;">
-                                    use a dash to indicate range
-                                </div>
-                                -->
                                 <input type="text" id="in-{{$index}}">
-                                                        <!--
-                                                        ng-mouseleave="rangeCheck($index)"
-                                                        ng-mouseover="clearRangeError($index)">
-                                                        -->
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- End Assessments -->
 
         <div class="row">
             <div class="small-12 columns">
@@ -98,16 +92,20 @@
             </div>
         </div>
 
+
         <div class="row">
             <div class="small-12 columns">
                 <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
-                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
-                                                                                            || isDuplicatePatientGroupName
-                                                                                            ">
-                                                                        Save
-                </button>
+                <button class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
+                                                                        || isDuplicatePatientGroupName"
+                        class="btn btn-primary">Save</button>
+                <button class="tiny" ng-click="delete()" ng-disabled="isClean() || myForm.$invalid"
+                        class="btn btn-primary">Delete</button>
+
             </div>
         </div>
-
     </form>
+    <!-- used to fire pageLoaded() only -->
+    <span ng-show="pageLoaded()"></span>
+
 </div>
