@@ -38,6 +38,18 @@
         </div>
         </p>
 
+        <div class="row" ng-show="hasRangeError">
+            <div class="small-12 columns">
+                <label class="error">Range Error</label>
+            </div>
+        </div>
+
+        <div class="row" ng-show="hasNumberInputError">
+            <div class="small-12 columns">
+                <label class="error">Input Number Error</label>
+            </div>
+        </div>
+
         <div class="row">
             <div class="small-12 columns divTable">
                 <div ng-repeat="assessment in assessments | filter:search | orderBy:'assessmentName'">
@@ -51,17 +63,27 @@
                                 <label>{{assessment.assessmentName}}</label>
                             </td>
                             <td>
-                                <select id="sel-{{$index}}">
+                                <select id="sel-{{$index}}"> <!-- onchange="clearRangeError($index)"> -->
                                     <option value="na">N/A</option>
                                     <option value="eq">=</option>
                                     <option value="lt">&lt;</option>
                                     <option value="lteq">&lt;=</option>
                                     <option value="gt">&gt;</option>
                                     <option value="gteq">&gt;=</option>
+                                    <option value="range">range</option>
                                 </select>
                             </td>
                             <td>
+                                <!--
+                                <div id="rangeError-{{$index}}" style="display: none;">
+                                    use a dash to indicate range
+                                </div>
+                                -->
                                 <input type="text" id="in-{{$index}}">
+                                                        <!--
+                                                        ng-mouseleave="rangeCheck($index)"
+                                                        ng-mouseover="clearRangeError($index)">
+                                                        -->
                             </td>
                         </tr>
                     </table>
@@ -80,7 +102,7 @@
             <div class="small-12 columns">
                 <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
                 <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid
-                                                                                            || isDuplicateAssessmentName
+                                                                                            || isDuplicatePatientGroupName
                                                                                             ">
                                                                         Save
                 </button>

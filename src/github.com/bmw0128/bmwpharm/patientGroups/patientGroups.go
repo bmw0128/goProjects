@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"strconv"
-	"io/ioutil"
+	//"io/ioutil"
 	"github.com/gorilla/mux"
 	"github.com/icub3d/gorca"
 	"github.com/bmw0128/bmwpharm/clients"
@@ -32,16 +32,12 @@ type PatientGroup struct {
 type PatientGroup struct{
 	Id string `json:"id"`
 	Name string `json:"patientGroupName"`
-	ParentGroup *PatientGroup `json:"parentGroup"`
-	SubGroup *PatientGroup `json:"subGroup"`
 	AssessmentValues []diseases.AssessmentValue `json:"assessmentValues"`
 }
 
 type PatientGroupTemp struct {
 	Id string `json:"id"`
-	Name string `json:"diseaseName"`
-	ParentGroup PatientGroup `json:"parentGroup"`
-	SubGroup PatientGroup `json:"subGroup"`
+	Name string `json:"patientGroupName"`
 	AssessmentValues []map[string]string `json:"assessments"`
 }
 
@@ -83,10 +79,17 @@ func CreatePatientGroup(w http.ResponseWriter, r *http.Request){
 		gorca.WriteJSON(c, w, r, http.StatusNotFound)
 	}else {
 
+		//testing
+		//bytes, _ := ioutil.ReadAll(r.Body)
+		//c.Infof("*** patient group temp bytes: " + string(bytes));
+		//end testing
+
 		defer r.Body.Close()
 		var patientGroupTemp PatientGroupTemp
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&patientGroupTemp)
+
+		c.Infof("*** PatientGroupTemp: %v", patientGroupTemp)
 
 		/*
 		disease := &Disease{Name: diseaseTemp.Name, AliasNames: diseaseTemp.AliasNames}
@@ -125,11 +128,6 @@ func CreatePatientGroup(w http.ResponseWriter, r *http.Request){
 
 		}
 		*/
-		//testing
-		bytes, _ := ioutil.ReadAll(r.Body)
-		c.Infof("*** disease bytes: " + string(bytes));
-		//end testing
-
 
 	}
 
