@@ -49,7 +49,7 @@ function PatientNewCtrl($scope, Restangular, $location, $http, $q) {
 
         if(!$scope.hasValidationErrors){
             var s = getPatientJSONPOST($scope);
-            console.log("*** patient: " + JSON.stringify(s));
+            //console.log("*** patient: " + JSON.stringify(s));
             Restangular.all('patients/new').post(s).then(
                 function() {
                     $location.path('/patients');
@@ -115,8 +115,8 @@ function pregnancyValidationOk($scope){
     var gender= $('#gender').val();
     var pregnant= $('#pregnant').val();
 
-    if(gender === 'male'){
-        return pregnant === '' || pregnant == false;
+    if(gender === 'male' && pregnant === 'true'){
+        return false;
     }
     return true;
 

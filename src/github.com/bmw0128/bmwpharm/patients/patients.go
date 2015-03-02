@@ -32,16 +32,6 @@ type Patient struct {
 
 	Diseases []string `json:"diseases"`
 
-	//Systolic int `json:"systolic"`
-	//Diastolic int `json:"diastolic"`
-
-	//CHF, Chronic/Congestive Heart Failure related
-	//EjectionFraction int `json:"ejectionFraction"` //ejectionFraction will be a percentage
-	//NYHAClass int `json:"nyhaClass"` //I, II, III, IV, but we'll use 1, 2, 3, and 4
-
-	//Osteoporosis related
-	//BMD float32 `json:"bmd"`
-
 }
 
 func MakeMuxer(prefix string) http.Handler {
@@ -106,15 +96,21 @@ func GetPatients(w http.ResponseWriter, r *http.Request){
 	}else {
 
 		var patients []Patient
-		/*
-		var patients = make([]Patient, 0)
-		var p Patient
-		p = Patient{Id: "1", ClientId: "1", Age: 32, Pregnant: true}
-		patients= append(patients, p)
-		p= Patient{Id: "2", ClientId: "1", Age: 67, Pregnant: false}
-		patients= append(patients, p)
-		*/
 
+		//stringId := vars["id"]
+		var clientId= loggedInClient.Id
+
+		//entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		//key := datastore.NewKey(c, "Patient", "", entity_id_int, nil)
+		if(clients.ClientIsAdmin(loggedInClient)){
+			q := datastore.NewQuery("Patient")
+			q.GetAll(c, &patients)
+		}else {
+			q := datastore.NewQuery("Patient").Filter("ClientId =", clientId)
+			q.GetAll(c, &patients)
+		}
+		//t := q.Run(c)
+		c.Infof("*** patients: %v", patients)
 
 		gorca.WriteJSON(c, w, r, patients)
 	}

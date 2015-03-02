@@ -19,7 +19,7 @@
                 <tbody>
                 <tr ng-repeat="patient in patients | filter:search | orderBy:'id'">
                     <td class="nameCell">
-                        <a href="#/patients/detail/{{patient.id}}">{{patient.id}}</a>
+                        <a href="#/patients/detail/{{patient.id}}">{{patient.lastName}}</a>
                     </td>
                     <td class="actionCell">
                         <a href="#/patients/edit/{{patient.id}}"><i class="foundicon-edit"></i></a>
