@@ -1,3 +1,4 @@
+<!--
 <div class="small-12 columns">
     <br />
     <div multi-select
@@ -6,5 +7,40 @@
          item-label="diseaseName"
          tick-property="ticked"
             >
+    </div>
+</div>
+-->
+
+<div class="row">
+    <div class="small-12 columns">
+        Selected Diseases:
+        <div ng-repeat="disease in selectedDiseases">
+            {{disease.diseaseName}}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="small-12 columns">
+        <input type="text" ng-model="search" class="search-query" placeholder="Disease search"/>
+    </div>
+</div>
+</p>
+
+<div class="row">
+    <div class="small-12 columns divTable">
+        <div ng-repeat="disease in diseases | filter:search | orderBy:'diseaseName'">
+            <table>
+                <tr>
+                    <td>
+                        <input type="checkbox" id="cb-{{$index}}"/>
+                        <input type="hidden" id="disease-{{$index}}" value="{{disease.id}}"/>
+                    </td>
+                    <td>
+                        <label>{{disease.diseaseName}}</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>

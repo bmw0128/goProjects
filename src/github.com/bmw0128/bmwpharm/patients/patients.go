@@ -10,7 +10,7 @@ import(
 	//"strings"
 	"encoding/json"
 	"github.com/bmw0128/bmwpharm/clients"
-	//"strconv"
+	"strconv"
 	//"log"
 	//"io/ioutil"
 	//"net/http/httputil"
@@ -46,11 +46,46 @@ func MakeMuxer(prefix string) http.Handler {
 	}
 
 	m.HandleFunc("/", GetPatients).Methods("GET")
+	m.HandleFunc("/{id}/", GetPatientById).Methods("GET")
 
 	m.HandleFunc("/new", CreatePatient).Methods("POST")
 
 	return m
 
+}
+
+func GetPatientById(w http.ResponseWriter, r *http.Request) {
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientHasARole(loggedInClient)){
+
+		var isAdmin = clients.ClientIsAdmin(loggedInClient)
+		var clientId= loggedInClient.Id
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		key := datastore.NewKey(c, "Patient", "", entity_id_int, nil)
+
+
+		var thePatient Patient
+		if err := datastore.Get(c, key, &thePatient); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		thePatient.Id= stringId
+
+		if(isAdmin || (clientId == thePatient.ClientId)) {
+			gorca.WriteJSON(c, w, r, thePatient)
+		}else {
+			gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
+		}
+	}
 }
 
 func CreatePatient(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +105,6 @@ func CreatePatient(w http.ResponseWriter, r *http.Request) {
 		dec.Decode(&aPatient)
 
 		aPatient.ClientId= loggedInClient.Id
-
 
 		_, err := datastore.Put(c, datastore.NewIncompleteKey(c, "Patient", nil), &aPatient)
 		if err != nil {
@@ -104,13 +138,29 @@ func GetPatients(w http.ResponseWriter, r *http.Request){
 		//key := datastore.NewKey(c, "Patient", "", entity_id_int, nil)
 		if(clients.ClientIsAdmin(loggedInClient)){
 			q := datastore.NewQuery("Patient")
-			q.GetAll(c, &patients)
+			keys, err := q.GetAll(c, &patients)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			for idx, key := range keys {
+				id := strconv.FormatInt(key.IntID(), 10)
+				patients[idx].Id= id
+			}
 		}else {
 			q := datastore.NewQuery("Patient").Filter("ClientId =", clientId)
-			q.GetAll(c, &patients)
+			keys, err := q.GetAll(c, &patients)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			for idx, key := range keys {
+				id := strconv.FormatInt(key.IntID(), 10)
+				patients[idx].Id= id
+			}
 		}
 		//t := q.Run(c)
-		c.Infof("*** patients: %v", patients)
+		//c.Infof("*** patients: %v", patients)
 
 		gorca.WriteJSON(c, w, r, patients)
 	}

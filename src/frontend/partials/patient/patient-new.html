@@ -58,11 +58,13 @@
                                                                             || hasValidationErrors">
                 Save
             </button>
-            <button ng-click="destroy()" ng-show="drug._id" class="tiny">Delete</button>
+            <button ng-click="delete()" ng-show="patient.id" class="tiny">Delete</button>
 
         </div>
     </div>
-
-
 </form>
+
+    <!-- used to fire pageLoaded() only -->
+    <span ng-show="pageLoaded()"></span>
+
 </div>
