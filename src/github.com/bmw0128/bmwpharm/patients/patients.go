@@ -47,11 +47,47 @@ func MakeMuxer(prefix string) http.Handler {
 
 	m.HandleFunc("/", GetPatients).Methods("GET")
 	m.HandleFunc("/{id}/", GetPatientById).Methods("GET")
+	m.HandleFunc("/{id}/", DeletePatient).Methods("DELETE")
 
 	m.HandleFunc("/new", CreatePatient).Methods("POST")
 
 	return m
 
+}
+
+func DeletePatient(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientHasARole(loggedInClient)){
+
+		var isAdmin = clients.ClientIsAdmin(loggedInClient)
+		var clientId= loggedInClient.Id
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		key := datastore.NewKey(c, "Patient", "", entity_id_int, nil)
+
+		var thePatient Patient
+		if err := datastore.Get(c, key, &thePatient); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if(isAdmin || (clientId == thePatient.ClientId)) {
+			err := datastore.Delete(c, key)
+			if err != nil{
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}else {
+			gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
+		}
+	}
 }
 
 func GetPatientById(w http.ResponseWriter, r *http.Request) {

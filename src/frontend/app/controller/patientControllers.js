@@ -37,6 +37,10 @@ function PatientEditCtrl($scope, $location, Restangular, patient) {
 
     setUpSections($scope);
 
+    $scope.cancel = function () {
+        $location.path('/patients');
+    };
+
     /*
     var originalPatientName = $scope.selectedPatient.patientName;
 
@@ -103,16 +107,15 @@ function PatientEditCtrl($scope, $location, Restangular, patient) {
         }
 
     };
-
+    */
     $scope.delete = function () {
 
-        Restangular.one('patientGroups/' + $scope.selectedPatientGroup.id + "/").remove().then(
+        Restangular.one('patients/' + $scope.patient.id + "/").remove().then(
             function () {
-                $location.path('/admin/patientGroupManagement');
+                $location.path('/patients');
             });
     };
 
-    */
     $scope.pageLoaded = function () {
         for (var i = 0; i < $scope.patient.diseases.length; i++) {
             var outerDiseaseId = $scope.patient.diseases[i];
@@ -121,11 +124,7 @@ function PatientEditCtrl($scope, $location, Restangular, patient) {
                 var diseaseIdValue = document.getElementById(diseaseId).value;
                 if (outerDiseaseId === diseaseIdValue) {
                     var cbId = "cb-" + j;
-                    //var inId = "#in-" + j;
-                    //var selId = "#sel-" + j;
                     document.getElementById(cbId).checked = true;
-                    //$(selId).val($scope.selectedPatientGroup.assessmentValues[i].operator);
-                    //$(inId).val($scope.selectedPatientGroup.assessmentValues[i].value);
                     break;
                 }
             }
