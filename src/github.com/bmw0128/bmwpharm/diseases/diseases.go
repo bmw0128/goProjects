@@ -308,7 +308,7 @@ func GetDiseases(w http.ResponseWriter, r *http.Request) {
 	u := user.Current(c)
 	loggedInClient := clients.GetClientByEmail(c, u.Email)
 
-	if(clients.ClientIsAdmin(loggedInClient)){
+	if(clients.ClientHasARole(loggedInClient)){
 		q := datastore.NewQuery("Disease")
 		var diseases []Disease
 		keys, err := q.GetAll(c, &diseases)

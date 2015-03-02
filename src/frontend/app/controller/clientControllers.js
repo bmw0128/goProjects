@@ -11,6 +11,8 @@ var OffCanvasCtrl = function ($scope, Restangular) {
             $scope.isAdmin= roles.indexOf('admin') > -1;
             //$scope.isAdmin= true;
             $scope.isClient= roles.indexOf('client') > -1;
+
+            $scope.isAClient= roles.length > 0;
         });
 };
 

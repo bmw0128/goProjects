@@ -161,6 +161,14 @@ func ClientIsAdmin(client Client) bool{
 	return false
 }
 
+func ClientHasARole(client Client) bool{
+
+	if(len(client.Role) > 0){
+		return true
+	}
+	return false
+}
+
 func ClientIsClient(client Client) bool{
 
 	if(client.Role == "client"){

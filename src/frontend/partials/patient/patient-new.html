@@ -7,80 +7,44 @@
     </ul>
 
     <ul class="off-canvas-list" ng-show="navSection">
-            <li><a ng-click="patientSection('general')">General</a></li>
-            <li><a ng-click="patientSection('diseases')">Diseases</a></li>
+        <li><a ng-click="patientSection('general')">General</a></li>
+        <!--
+        <li><a ng-click="patientSection('lipidPanel')">Lipid Panel</a></li>
+        <li><a ng-click="patientSection('bloodChemistry')">Blood Chemistry</a></li>
+        <li><a ng-click="patientSection('cbc')">CBC</a></li>
+        <li><a ng-click="patientSection('familyHistory')">Family History</a></li>
+        <li><a ng-click="patientSection('cardiac')">Cardiac</a></li>
+        <li><a ng-click="patientSection('respiratory')">Respiratory</a></li>
+        <li><a ng-click="patientSection('allergies')">Allergies</a></li>
+        <li><a ng-click="patientSection('mental')">Mental</a></li>
+        <li><a ng-click="patientSection('skeletal')">Skeletal</a></li>
+        <li><a ng-click="patientSection('muscular')">Muscular</a></li>
+        -->
+        <li><a ng-click="patientSection('diseases')">Diseases</a></li>
 
-            <!--
-            <li><a ng-click="patientSection(3)">Section 3</a></li>
-            <li><a ng-click="patientSection(4)">Section 4</a></li>
-            <li><a ng-click="patientSection(5)">Section 5</a></li>
-            -->
-        </ul>
-
+    </ul>
 
 
     <div ng-show="generalSection">
-    <div class="row">
-
-        <div class="small-6 columns">
-            <label>Name
-                <input type="text" id="name" ng-model="patient.name"/>
-            </label>
-        </div>
-
-        <div class="small-6 columns">
-            <label>Age
-                <input type="text" id="age" name="age" ng-minlength="1" ng-maxlength="3"
-                       ng-pattern='/^[1-9]*$/'
-                       ng-model="patient.age"/>
-            </label>
-        </div>
+        <div ng-include="'frontend/partials/patient/patientSections/generalSection.html'"></div>
     </div>
 
-    <div class="row">
-        <div class="small-4 columns">
-            <label>Gender
-                <select name="gender" id="gender" ng-model="patient.gender">
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                </select>
-            </label>
-        </div>
-
-        <div class="small-4 columns" ng-show="patient.gender == 'female'">
-            <label>Pregnant
-                <select name="pregnant" id="pregnant" ng-model="patient.pregnant">
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                </select>
-            </label>
-        </div>
-
-        <div class="row">
-            <div class="small-4 columns">
-                <label>Race
-                    <select name="race" id="race" ng-model="patient.race">
-                        <option value="white">White</option>
-                        <option value="black">Black</option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-    </div>
+    <div ng-show="bloodChemistrySection">
+        <div ng-include="'frontend/partials/patient/patientSections/bloodChemistrySection.html'"></div>
     </div>
 
 
     <div class="row" ng-show="diseasesSection">
+        <div ng-include="'frontend/partials/patient/patientSections/diseasesSection.html'"></div>
+    </div>
+
+    <br/>
+
+    <div class="row" ng-show="hasValidationErrors">
         <div class="small-12 columns">
-            <br />
-            <div multi-select
-                 input-model="diseases"
-                 button-label="diseaseName"
-                 item-label="diseaseName"
-                 tick-property="ticked"
-                    >
-            </div>
+            <a ng-click="clearValidationErrors()">
+                <label class="error">Validation Error(s) click to clear</label>
+            </a>
         </div>
     </div>
 
@@ -91,16 +55,13 @@
             <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
             <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean()
                                                                             || myForm.$invalid
-                                                                            || myForm.age.$invalid">
+                                                                            || hasValidationErrors">
                 Save
             </button>
             <button ng-click="destroy()" ng-show="drug._id" class="tiny">Delete</button>
 
         </div>
     </div>
-
-
-
 
 
 </form>

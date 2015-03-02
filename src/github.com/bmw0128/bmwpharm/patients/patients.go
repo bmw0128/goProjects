@@ -3,7 +3,7 @@ package patients
 import(
 	"appengine"
 	"appengine/user"
-	//"appengine/datastore"
+	"appengine/datastore"
 	"net/http"
 	"github.com/gorilla/mux"
 	"github.com/icub3d/gorca"
@@ -21,11 +21,17 @@ import(
 type Patient struct {
 	Id string `json:"id"`
 	ClientId string `json:"clientId"` //client has patients
-	Diseases []int `json:"diseases"`
+	FirstName string `json:"firstName"`
+	LastName string `json:"lastName"`
 	Age int `json:"age"`
 	Gender string `json:"gender"`
 	Pregnant bool `json:"pregnant"`
 	Race string `json:"race"`
+	BP string `json:"bp"`
+	HeartRate int `json:"heartRate"`
+
+	Diseases []string `json:"diseases"`
+
 	//Systolic int `json:"systolic"`
 	//Diastolic int `json:"diastolic"`
 
@@ -61,15 +67,12 @@ func CreatePatient(w http.ResponseWriter, r *http.Request) {
 
 	c := appengine.NewContext(r)
 	loggedInUser := user.Current(c)
-	//c.Infof("*** loggedInUser: %v: ", loggedInUser)
 	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
-	//c.Infof("*** loggedInClient: %v: ", loggedInClient)
 
 	//bytes, _ := ioutil.ReadAll(r.Body)
 	//c.Infof("*** bytes: " + string(bytes));
 
-	//make sure we have a logged in user
-	if(loggedInUser.Email != ""){
+	if(clients.ClientHasARole(loggedInClient)){
 
 		var aPatient Patient
 		defer r.Body.Close()
@@ -78,7 +81,13 @@ func CreatePatient(w http.ResponseWriter, r *http.Request) {
 
 		aPatient.ClientId= loggedInClient.Id
 
-		c.Infof("*** aPatient: %v", aPatient)
+
+		_, err := datastore.Put(c, datastore.NewIncompleteKey(c, "Patient", nil), &aPatient)
+		if err != nil {
+			c.Errorf("*** error saving Patient: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 	}else{
 		gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
@@ -89,21 +98,23 @@ func GetPatients(w http.ResponseWriter, r *http.Request){
 
 	c := appengine.NewContext(r)
 
-	//loggedInUser := user.Current(c)
-	//loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
 
-	//if (!clients.ClientIsAdmin(loggedInClient)) {
-	if (false) {
+	if(!clients.ClientHasARole(loggedInClient)) {
 		gorca.WriteJSON(c, w, r, http.StatusNotFound)
 	}else {
-		var patients = make([]Patient, 0)
 
+		var patients []Patient
+		/*
+		var patients = make([]Patient, 0)
 		var p Patient
 		p = Patient{Id: "1", ClientId: "1", Age: 32, Pregnant: true}
 		patients= append(patients, p)
-
 		p= Patient{Id: "2", ClientId: "1", Age: 67, Pregnant: false}
 		patients= append(patients, p)
+		*/
+
 
 		gorca.WriteJSON(c, w, r, patients)
 	}

@@ -1,0 +1,76 @@
+<div class="row">
+
+    <div class="small-4 columns">
+        <label>First Name
+            <input type="text" id="firstName" ng-model="patient.firstName"/>
+        </label>
+    </div>
+
+    <div class="small-4 columns">
+    <label class="error">Last Name (required)
+        <input type="text" id="lastName" ng-model="patient.lastName"/>
+    </label>
+    </div>
+
+
+    <div class="small-4 columns">
+        <label>Age
+            <input type="text" id="age" name="age" ng-model="patient.age"/>
+        </label>
+    </div>
+</div>
+
+<div class="row">
+    <div class="small-4 columns">
+        <label>Gender
+            <select name="gender" id="gender" ng-model="patient.gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="small-4 columns">
+        <label>Pregnant
+            <select name="pregnant" id="pregnant" ng-model="patient.pregnant">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="row">
+        <div class="small-4 columns">
+            <label>Race
+                <select name="race" id="race" ng-model="patient.race">
+                    <option value="white">White</option>
+                    <option value="black">Black</option>
+                    <option value="hispanic">Hispanic</option>
+                    <option value="asian">Asian</option>
+                </select>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="small-4 columns">
+        <label>BP
+            <select name="bp" id="bp" ng-model="patient.bp">
+                <option value="below">Below</option>
+                <option value="normal">Normal</option>
+                <option value="stage1">Stage 1</option>
+                <option value="stage1NotAtGoal">Stage 1 Not at Goal</option>
+                <option value="high">Stage 2 - High</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="small-4 columns">
+        <label>Heart Rate (bps)
+            <input type="text" id="heartRate" name="heartRate" ng-model="patient.heartRate"/>
+        </label>
+    </div>
+
+
+</div>

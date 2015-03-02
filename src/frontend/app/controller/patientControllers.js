@@ -32,24 +32,36 @@ function PatientNewCtrl($scope, Restangular, $location, $http, $q) {
 
     $scope.cancel= function(){
         $location.path('/patients');
-    }
+    };
+
+    $scope.hasValidationErrors= false;
+
+    $scope.clearValidationErrors= function(){
+        $scope.hasValidationErrors= false;
+    };
 
     $scope.save= function(){
 
-        var s = getPatientJSONPOST($scope);
+        $scope.hasValidationErrors= false;
+        if(!validationPassed($scope)){
+            $scope.hasValidationErrors= true;
+        }
 
-        //console.log("*** s: " + JSON.stringify(s));
-
-        Restangular.all('patients/new').post(s).then(
-            function() {
-                $location.path('/patients');
-            });
+        if(!$scope.hasValidationErrors){
+            var s = getPatientJSONPOST($scope);
+            console.log("*** patient: " + JSON.stringify(s));
+            Restangular.all('patients/new').post(s).then(
+                function() {
+                    $location.path('/patients');
+                });
+        }
 
     };
 
     $scope.selectedSection= "Patient Info Sections";
     $scope.navSection= true;
     $scope.generalSection= false;
+    $scope.bloodChemistrySection= false;
     $scope.diseasesSection= false;
 
     $scope.patientSection= function(section){
@@ -57,22 +69,57 @@ function PatientNewCtrl($scope, Restangular, $location, $http, $q) {
             $scope.selectedSection= "Patient Info Sections";
             $scope.navSection= true;
             $scope.generalSection= false;
+            $scope.bloodChemistrySection= false;
             $scope.diseasesSection= false;
         }
         if(section === 'general'){
             $scope.selectedSection= "Selected Section: General...click to go back";
             $scope.navSection= false;
             $scope.generalSection= true;
+            $scope.bloodChemistrySection= false;
+            $scope.diseasesSection= false;
+        }
+        if(section === 'bloodChemistry'){
+            $scope.selectedSection= "Selected Section: Blood Chemistry...click to go back";
+            $scope.navSection= false;
+            $scope.generalSection= false;
+            $scope.bloodChemistrySection= true;
             $scope.diseasesSection= false;
         }
         if(section === 'diseases'){
             $scope.selectedSection= "Selected Section: Diseases...click to go back";
             $scope.navSection= false;
             $scope.generalSection= false;
+            $scope.bloodChemistrySection= false;
             $scope.diseasesSection= true;
         }
 
     }
+}
+
+function validationPassed($scope){
+
+    var age= $('#age').val();
+    var heartRate= $('#heartRate').val();
+    var lastName= $('#lastName').val();
+
+    return lastName != ''
+                && /^[1-9]*$/.test(age)
+                && /^[1-9]*$/.test(heartRate)
+                && pregnancyValidationOk($scope);
+
+}
+
+function pregnancyValidationOk($scope){
+
+    var gender= $('#gender').val();
+    var pregnant= $('#pregnant').val();
+
+    if(gender === 'male'){
+        return pregnant === '' || pregnant == false;
+    }
+    return true;
+
 }
 
 function getPatientJSONPOST($scope) {
@@ -83,16 +130,30 @@ function getPatientJSONPOST($scope) {
             diseaseArray.push(value.id);
         }
     });
-
+    /*
     var age = document.getElementById("age").value;
     var gender = document.getElementById("gender").value;
     var pregnant = document.getElementById("pregnant").value;
     var race = document.getElementById("race").value;
+    */
 
-    return {"age": parseInt(age),
+    var firstName= $('#firstName').val();
+    var lastName= $('#lastName').val();
+    var age= $('#age').val();
+    var gender= $('#gender').val();
+    var pregnant= $('#pregnant').val();
+    var race= $('#race').val();
+    var bp= $('#bp').val();
+    var heartRate= $('#heartRate').val();
+
+    return {"firstName": firstName,
+            "lastName": lastName,
+            "age": parseInt(age),
             "gender": gender,
             "pregnant": pregnant,
             "race": race,
+            "bp": bp,
+            "heartRate": parseInt(heartRate),
             "diseases": diseaseArray};
 }
 
