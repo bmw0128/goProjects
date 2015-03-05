@@ -48,10 +48,62 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/", GetPatients).Methods("GET")
 	m.HandleFunc("/{id}/", GetPatientById).Methods("GET")
 	m.HandleFunc("/{id}/", DeletePatient).Methods("DELETE")
-
 	m.HandleFunc("/new", CreatePatient).Methods("POST")
+	m.HandleFunc("/edit", EditPatient).Methods("POST")
 
 	return m
+
+}
+
+func EditPatient(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	var isAdmin = clients.ClientIsAdmin(loggedInClient)
+	var clientId= loggedInClient.Id
+
+	if(!clients.ClientHasARole(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
+	}else {
+
+		/*testing
+		bytes, _ := ioutil.ReadAll(r.Body)
+		c.Infof("*** edit bytes: " + string(bytes));
+		//end testing
+		*/
+
+		defer r.Body.Close()
+
+		var thePatient Patient
+		//d := new(Drug)
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&thePatient)
+
+		stringId := thePatient.Id
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		key := datastore.NewKey(c, "Patient", "", entity_id_int, nil)
+
+		var thePatientFromDB Patient
+		if err := datastore.Get(c, key, &thePatientFromDB); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if(isAdmin || (clientId == thePatientFromDB.ClientId)) {
+			_, err := datastore.Put(c, key, &thePatient)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}else {
+			gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
+		}
+
+	}
+
 
 }
 

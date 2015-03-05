@@ -75,7 +75,7 @@ func EditPatientGroup(w http.ResponseWriter, r *http.Request){
 
 		stringId := thePatientGroup.Id
 
-		c.Infof("*** PG to be edited: %v", stringId)
+		//c.Infof("*** PG to be edited: %v", stringId)
 
 		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
 		patientGroupKey := datastore.NewKey(c, "PatientGroup", "", entity_id_int, nil)

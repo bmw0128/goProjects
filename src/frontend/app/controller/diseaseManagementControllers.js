@@ -265,7 +265,7 @@ function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http
             return false;
         };
 }
-
+/*
 function getAssessmentValues($scope){
 
     var assessmentArray= [];
@@ -290,6 +290,7 @@ function getAssessmentValues($scope){
     }
 
 }
+*/
 
 function DiseaseListCtrl($scope, Restangular, printingService) {
 
