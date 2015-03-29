@@ -47,7 +47,7 @@ app.directive('diseaseSearchTypeahead', function(){
         + '<div class="typeaheadResultsDiv" '
         + ' ng-hide="!modeldisplay.length || selected" style="width:100%">'
 
-        + '<a ng-click="addInteractionDrug($event)" data="{{item}}" '
+        + '<a ng-click="addDisease($event)" data="{{item}}" '
         + ' ng-repeat="item in TypeAheadData" '
 
         + '>'

@@ -71,9 +71,10 @@ func EditPatient(w http.ResponseWriter, r *http.Request){
 
 		/*testing
 		bytes, _ := ioutil.ReadAll(r.Body)
-		c.Infof("*** edit bytes: " + string(bytes));
+		c.Infof("*** edited bytes: " + string(bytes));
 		//end testing
 		*/
+
 
 		defer r.Body.Close()
 
@@ -93,6 +94,8 @@ func EditPatient(w http.ResponseWriter, r *http.Request){
 			return
 		}
 
+		c.Infof("*** edited patient: %s", thePatient)
+
 		if(isAdmin || (clientId == thePatientFromDB.ClientId)) {
 			_, err := datastore.Put(c, key, &thePatient)
 			if err != nil {
@@ -101,9 +104,7 @@ func EditPatient(w http.ResponseWriter, r *http.Request){
 		}else {
 			gorca.WriteJSON(c, w, r, http.StatusUnauthorized)
 		}
-
 	}
-
 
 }
 
