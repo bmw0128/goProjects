@@ -27,6 +27,18 @@ app.config(function($routeProvider, RestangularProvider) {
 
 function PatientEditCtrl($scope, $location, Restangular, patient) {
 
+    patient.getFullName= function(){
+       return this.firstName + " " + this.lastName;
+    };
+
+    patient.getIdForPage= function(){
+
+        var out1 = [this.id.slice(0, 4), "-", this.id.slice(4)].join('');
+        var out2 = [out1.slice(0, 9), "-", out1.slice(9)].join('');
+        var out3=  [out2.slice(0, 14), "-", out2.slice(14)].join('');
+        return out3;
+    };
+
     $scope.patient = patient;
     //console.log("*** Patient stringify: " + JSON.stringify($scope.patient));
 

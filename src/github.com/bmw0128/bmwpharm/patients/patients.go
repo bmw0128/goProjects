@@ -29,7 +29,6 @@ type Patient struct {
 	Race string `json:"race"`
 	BP string `json:"bp"`
 	HeartRate int `json:"heartRate"`
-
 	Diseases []string `json:"diseases"`
 
 }
