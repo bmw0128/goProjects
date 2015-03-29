@@ -6,6 +6,12 @@
         <li><label ng-click="patientSection('nav')">{{selectedSection}}</label></li>
     </ul>
 
+
+    <div>
+        Patient: {{patient.firstName}} {{patient.lastName}}
+    </div>
+
+
     <ul class="off-canvas-list" ng-show="navSection">
         <li><a ng-click="patientSection('general')">General</a></li>
         <!--
@@ -23,7 +29,6 @@
         <li><a ng-click="patientSection('diseases')">Diseases</a></li>
 
     </ul>
-
 
     <div ng-show="generalSection">
         <div ng-include="'frontend/partials/patient/patientSections/generalSection.html'"></div>

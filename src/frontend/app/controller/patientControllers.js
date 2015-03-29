@@ -9,7 +9,7 @@ app.config(function($routeProvider, RestangularProvider) {
 
         when('/patients/edit/:id',{
             controller:PatientEditCtrl,
-            templateUrl: 'frontend/partials/patient/patient-new.html',
+            templateUrl: 'frontend/partials/patient/patient.html',
             resolve: {
                 patient: function(Restangular, $route){
                     var theRoute= 'patients/' + $route.current.params.id + '/';
@@ -20,7 +20,7 @@ app.config(function($routeProvider, RestangularProvider) {
 
         when('/patients/new', {
             controller: PatientNewCtrl,
-            templateUrl: 'frontend/partials/patient/patient-new.html'
+            templateUrl: 'frontend/partials/patient/patient.html'
 
         });
 });
