@@ -60,9 +60,19 @@ app.config(function($routeProvider, RestangularProvider) {
 
 function DiseaseTxCtrl($scope, $location, Restangular, disease, $filter, $http){
 
-    disease.patientGroupCombos= [];
+    if(disease.patientGroupCombos == null)
+        disease.patientGroupCombos= [];
 
     $scope.disease = disease;
+
+    /*
+    var m= {};
+    m['foobar']= ['me', 'my'];
+    m['sss']= ['she', 'him'];
+
+    $scope.disease.patientGroupCombos= m;
+    */
+
 
     Restangular.all('patientGroups').getList().then(
         function(patientGroups) {
@@ -71,13 +81,20 @@ function DiseaseTxCtrl($scope, $location, Restangular, disease, $filter, $http){
 
 }
 
-function DiseaseNewPatientGroupCombosCtrl($scope, Restangular, disease){
+function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, disease){
 
-    disease.patientGroupCombos= [];
+    if(disease.patientGroupCombos == null){
+        disease.patientGroupCombos= new Map();
+    }
+
+    if($scope.patientGroupCombo == null){
+        $scope.patientGroupCombo= new Map();
+    }
 
     $scope.disease = disease;
 
-    $scope.selectedPatientGroups= [];
+    if($scope.selectedPatientGroups == null)
+        $scope.selectedPatientGroups= [];
 
     Restangular.all('patientGroups').getList().then(
         function(patientGroups) {
@@ -87,10 +104,16 @@ function DiseaseNewPatientGroupCombosCtrl($scope, Restangular, disease){
     $scope.addPatientGroup= function(obj){
 
         $scope.modeldisplay= '';
-        //$scope.showNewInteractionDrug= true;
         var typeAheadPatientGroupName= obj.target.attributes.data.value;
 
-        console.log("*** addPatientGroup name: %s", typeAheadPatientGroupName);
+        //console.log("*** addPatientGroup name: %s", typeAheadPatientGroupName);
+        if($scope.selectedPatientGroups == null)
+            $scope.selectedPatientGroups= [];
+
+        var idx= $scope.selectedPatientGroups.indexOf(typeAheadPatientGroupName);
+        if(idx === -1)
+            $scope.selectedPatientGroups.push(typeAheadPatientGroupName);
+
         /*
         if($scope.patient.diseases == null){
             $scope.patient.diseases= [];
@@ -104,6 +127,45 @@ function DiseaseNewPatientGroupCombosCtrl($scope, Restangular, disease){
                 break;
             }
         }
+        */
+
+    };
+
+    $scope.removePatientGroup= function(patientGroupName){
+
+        var idx= $scope.selectedPatientGroups.indexOf(patientGroupName);
+        if(idx > -1)
+            $scope.selectedPatientGroups.splice(idx, 1);
+    };
+
+    $scope.cancel= function(){
+        var diseaseId= $scope.disease.id;
+        $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+    };
+
+    $scope.save= function(){
+
+        var comboName= $('#patientGroupComboName').val();
+
+        var m= {};
+        m[comboName]= $scope.selectedPatientGroups;
+
+        $scope.disease.patientGroupCombos= m;
+
+        var diseaseId= $scope.disease.id;
+        $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+
+        /*
+        for (var key in m) {
+            if (m.hasOwnProperty(key)) {
+                console.log(key + " -> " + m[key]);
+            }
+        }
+
+        $.each(m, function(key, value) {
+            console.log("*** printing key/val: ");
+            console.log(key, value);
+        });
         */
 
     };

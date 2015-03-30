@@ -1,8 +1,28 @@
+<div ng-show="isAdmin">
+    <form novalidate>
 
+        <div class="row">
+            <div class="small-12 columns">
+                Disease Name: {{disease.diseaseName}}
+            </div>
+        </div>
 
+<div class="row">
 <div class="interactionDrugSearch">
     <patientgroup-search-typeahead />
 </div>
+</div>
+
+        <div class="row">
+        <div class="small-12 columns">
+            <label>Patient Grouping Name
+                <input type="text" id="patientGroupComboName"/>
+                <!--
+                <input type="hidden" id="patientId" value="{{patient.id}}"/>
+                -->
+            </label>
+        </div>
+        </div>
 
 
 <div class="row">
@@ -11,14 +31,27 @@
         <div ng-repeat="patientGroup in selectedPatientGroups | orderBy:'patientGroupName'">
             <div class="interactionInfoContainer">
                 <div class="interactionButtons">
-                    <button type="button" class="tiny" ng-click="removePatientGroup(patientGroup.id)">Remove</button>
+                    <button type="button" class="tiny" ng-click="removePatientGroup(patientGroup)">Remove</button>
                     <label>
-                        {{patientGroup.patientGroupName}}
+                        {{patientGroup}}
                     </label>
                 </div>
             </div>
         </div>
 
 
+    </div>
+</div>
+        </form>
+    </div>
+
+<p>
+
+<div class="row">
+    <div class="small-12 columns">
+        <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+        <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid">
+            Save
+        </button>
     </div>
 </div>

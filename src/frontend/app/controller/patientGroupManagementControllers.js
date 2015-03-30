@@ -82,7 +82,7 @@ function PatientGroupNewCtrl($scope, Restangular, $location, $http, $q) {
         if(!$scope.hasRangeError && !$scope.hasNumberInputError) {
 
             var s = getPatientGroupJSONPOST($scope);
-            console.log("*** PG POST: " + JSON.stringify(s));
+            //console.log("*** PG POST: " + JSON.stringify(s));
 
             Restangular.all('patientGroups/new').post(s).then(
                 function (patientGroup) {
