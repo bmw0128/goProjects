@@ -34,6 +34,17 @@ app.config(function($routeProvider, RestangularProvider) {
             }
         }).
 
+        when('/admin/diseaseManagement/patientGroupCombos/new/:id',{
+            controller:DiseaseNewPatientGroupCombosCtrl,
+            templateUrl: 'frontend/partials/admin/disease-newPatientGroupCombo.html',
+            resolve: {
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.id + '/';
+                    return Restangular.one(theRoute).get();
+                }
+            }
+        }).
+
         when('/admin/diseaseManagement/detail/:id',{
             controller:DiseaseDetailCtrl,
             templateUrl: 'frontend/partials/admin/disease-detail.html',
@@ -49,7 +60,54 @@ app.config(function($routeProvider, RestangularProvider) {
 
 function DiseaseTxCtrl($scope, $location, Restangular, disease, $filter, $http){
 
-    $scope.selectedDisease = disease;
+    disease.patientGroupCombos= [];
+
+    $scope.disease = disease;
+
+    Restangular.all('patientGroups').getList().then(
+        function(patientGroups) {
+            $scope.patientGroups = patientGroups;
+        });
+
+}
+
+function DiseaseNewPatientGroupCombosCtrl($scope, Restangular, disease){
+
+    disease.patientGroupCombos= [];
+
+    $scope.disease = disease;
+
+    $scope.selectedPatientGroups= [];
+
+    Restangular.all('patientGroups').getList().then(
+        function(patientGroups) {
+            $scope.patientGroups = patientGroups;
+        });
+
+    $scope.addPatientGroup= function(obj){
+
+        $scope.modeldisplay= '';
+        //$scope.showNewInteractionDrug= true;
+        var typeAheadPatientGroupName= obj.target.attributes.data.value;
+
+        console.log("*** addPatientGroup name: %s", typeAheadPatientGroupName);
+        /*
+        if($scope.patient.diseases == null){
+            $scope.patient.diseases= [];
+        }
+
+        for (var j = 0; j < $scope.diseases.length; j++) {
+            var diseaseName = $scope.diseases[j].diseaseName;
+            if (typeAheadDrugName.trim() === diseaseName) {
+                //console.log("*** adding disease from typeahead: %s", JSON.stringify($scope.diseases[j]));
+                $scope.patient.diseases.push($scope.diseases[j]);
+                break;
+            }
+        }
+        */
+
+    };
+
 
 }
 

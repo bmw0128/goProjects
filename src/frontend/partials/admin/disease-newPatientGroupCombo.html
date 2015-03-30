@@ -1,0 +1,24 @@
+
+
+<div class="interactionDrugSearch">
+    <patientgroup-search-typeahead />
+</div>
+
+
+<div class="row">
+    <div class="small-12 columns divTable">
+
+        <div ng-repeat="patientGroup in selectedPatientGroups | orderBy:'patientGroupName'">
+            <div class="interactionInfoContainer">
+                <div class="interactionButtons">
+                    <button type="button" class="tiny" ng-click="removePatientGroup(patientGroup.id)">Remove</button>
+                    <label>
+                        {{patientGroup.patientGroupName}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

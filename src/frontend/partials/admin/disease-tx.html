@@ -1,1 +1,41 @@
-disease tx
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            Disease Name: {{disease.diseaseName}}
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="small-12 columns">
+
+        <table class="listingTable">
+
+            <thead>
+            <tr>
+                <th>Patient Grouping Name<a href="#/admin/diseaseManagement/patientGroupCombos/new/{{disease.id}}">
+                    <i class="foundicon-plus"></i></a>
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="combo in disease.patientGroupCombos | filter:search | orderBy:'comboName'">
+                <td class="nameCell">
+                    <a href="#/admin/diseaseManagement/patientGroupCombos/detail/{{combo.id}}">{{combo.comboName}}</a>
+
+                </td>
+                <td class="actionCell">
+                    <a href="#/admin/diseaseManagement/patientGroupCombos/edit/{{combo.id}}"><i class="foundicon-edit"></i></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+</div>
