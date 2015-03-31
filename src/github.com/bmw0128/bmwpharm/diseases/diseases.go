@@ -30,6 +30,9 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/{id}/", DeleteDisease).Methods("DELETE")
 	m.HandleFunc("/new", CreateDisease).Methods("POST")
 	m.HandleFunc("/edit", EditDisease).Methods("POST")
+	//m.HandleFunc("/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
+
+	m.HandleFunc("/{diseaseId}/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
 
 	// Everything else should 404.
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
@@ -56,6 +59,53 @@ type AssessmentValue struct {
 	AssessmentId string `json:"assessmentId"`
 	Operator string `json:"operator"`
 	Value string `json:"value"`
+}
+
+type PatientGrouping struct {
+	Id string `json:"id"`
+	//Disease string `json:disease"`
+	Name string `json:"patientGroupingName"`
+	PatientGroupingIds []string `json:"patientGroupingIds"`
+}
+
+func NewPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	if(!clients.ClientIsAdmin(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusNotFound)
+	}else {
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		diseaseId := vars["diseaseId"]
+
+		entity_id_int, _ := strconv.ParseInt(diseaseId, 10, 64)
+		diseaseKey := datastore.NewKey(c, "Disease", "", entity_id_int, nil)
+		//c.Infof("*** diseaseKey: %s", diseaseKey)
+
+		var patientGrouping PatientGrouping
+		defer r.Body.Close()
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&patientGrouping)
+
+		aPatientGroupingKey := datastore.NewIncompleteKey(c, "PatientGrouping", diseaseKey)
+		_, err := datastore.Put(c, aPatientGroupingKey, &patientGrouping)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		/*testing
+		bytes, _ := ioutil.ReadAll(r.Body)
+		c.Infof("*** NewPatientGroupingCombo bytes: " + string(bytes));
+		//end testing
+		*/
+
+	}
 }
 
 func EditDisease(w http.ResponseWriter, r *http.Request){

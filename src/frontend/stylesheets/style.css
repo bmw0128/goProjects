@@ -150,7 +150,7 @@ table tr th div, table tr td div{
 .divTable{
     /*max-height:209px;
     */
-    max-height:420px;
+    max-height:415px;
     overflow:auto;
     float: left;
 }

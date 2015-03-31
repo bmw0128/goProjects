@@ -16,7 +16,7 @@
         <div class="row">
         <div class="small-12 columns">
             <label>Patient Grouping Name
-                <input type="text" id="patientGroupComboName"/>
+                <input type="text" id="patientGroupingName"/>
                 <!--
                 <input type="hidden" id="patientId" value="{{patient.id}}"/>
                 -->
@@ -44,6 +44,16 @@
 </div>
         </form>
     </div>
+
+<p>
+
+<div class="row" ng-show="hasValidationErrors">
+    <div class="small-12 columns">
+        <a ng-click="clearValidationErrors()">
+            <label class="error">Validation Error(s) click to clear</label>
+        </a>
+    </div>
+</div>
 
 <p>
 

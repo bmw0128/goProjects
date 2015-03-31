@@ -73,16 +73,17 @@ function DiseaseTxCtrl($scope, $location, Restangular, disease, $filter, $http){
     $scope.disease.patientGroupCombos= m;
     */
 
-
+    /*
     Restangular.all('patientGroups').getList().then(
         function(patientGroups) {
             $scope.patientGroups = patientGroups;
         });
-
+    */
 }
 
 function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, disease){
 
+    /*
     if(disease.patientGroupCombos == null){
         disease.patientGroupCombos= new Map();
     }
@@ -90,7 +91,7 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
     if($scope.patientGroupCombo == null){
         $scope.patientGroupCombo= new Map();
     }
-
+    */
     $scope.disease = disease;
 
     if($scope.selectedPatientGroups == null)
@@ -145,15 +146,43 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
 
     $scope.save= function(){
 
+        $scope.hasValidationErrors= false;
+
         var comboName= $('#patientGroupComboName').val();
 
+        if($scope.disease.patientGroupCombos == null){
+            $scope.disease.patientGroupCombos= {};
+        }
+
+        var comboMap= $scope.disease.patientGroupCombos;
+
+        if(comboMap.hasOwnProperty(comboName)){
+            console.log("*** found dup comboName: %s", comboName);
+            $scope.hasValidationErrors= true;
+        }
+        else{
+            console.log("*** NO dup found for: %s", comboName);
+        }
+        //need to check for duplicate patientGroup set
+
+        /*
         var m= {};
         m[comboName]= $scope.selectedPatientGroups;
-
         $scope.disease.patientGroupCombos= m;
+        */
+
+
+        var s= getJSONNewPatientGroupingCombo($scope);
+        //console.log("*** New PG post: %s", JSON.stringify(s));
 
         var diseaseId= $scope.disease.id;
-        $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+
+        Restangular.all('diseases/' + diseaseId + '/newPatientGroupingCombo').post(s).then(
+            function() {
+                $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+            });
+
+
 
         /*
         for (var key in m) {
@@ -171,6 +200,31 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
     };
 
 
+}
+
+function getJSONNewPatientGroupingCombo($scope){
+
+    var patientGroupingName= $('#patientGroupingName').val();
+
+    return {"patientGroupingName":patientGroupingName.toLowerCase(),
+            "patientGroupingIds": getPatientGroupingComboIds($scope)};
+}
+
+function getPatientGroupingComboIds($scope){
+
+    var result= [];
+    for(var i=0; i < $scope.patientGroups.length; i++){
+
+        var id= $scope.patientGroups[i].id;
+        var patientGroupName= $scope.patientGroups[i].patientGroupName;
+        for(var k=0; k < $scope.selectedPatientGroups.length; k++){
+            if($scope.selectedPatientGroups[k].toLowerCase() === patientGroupName.toLowerCase()){
+                result.push(id);
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 function DiseaseEditCtrl($scope, $location, Restangular, disease, $filter, $http) {
