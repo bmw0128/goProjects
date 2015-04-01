@@ -27,6 +27,7 @@ func MakeMuxer(prefix string) http.Handler {
 
 	m.HandleFunc("/", GetDiseases).Methods("GET")
 	m.HandleFunc("/{id}/", GetDiseaseById).Methods("GET")
+	m.HandleFunc("/{id}/patientGroupings", GetPatientGroupings).Methods("GET")
 	m.HandleFunc("/{id}/", DeleteDisease).Methods("DELETE")
 	m.HandleFunc("/new", CreateDisease).Methods("POST")
 	m.HandleFunc("/edit", EditDisease).Methods("POST")
@@ -45,6 +46,8 @@ type Disease struct {
 	Name string `json:"diseaseName"`
 	AliasNames []string `json:"aliasNames"`
 	AssessmentValues []AssessmentValue `json:"assessmentValues"`
+	//PatientGroupings []map[string][]PatientGroup `json:"patientGroupings"`
+	//PatientGroupings []PatientGrouping `json:"patientGroupings"`
 }
 
 type DiseaseTemp struct {
@@ -54,6 +57,12 @@ type DiseaseTemp struct {
 	AssessmentValues []map[string]string `json:"assessments"`
 }
 
+type DiseaseTx struct{
+	Id string `json:"id"`
+	Name string `json:"diseaseName"`
+	PatientGroupingsTx []PatientGroupingTx `json:"patientGroupingsTx"`
+}
+
 type AssessmentValue struct {
 	Id string `json:"id"`
 	AssessmentId string `json:"assessmentId"`
@@ -61,11 +70,105 @@ type AssessmentValue struct {
 	Value string `json:"value"`
 }
 
+type PatientGroupingTx struct {
+	Id string `json:"id"`
+	Disease Disease `json:disease"`
+	Name string `json:"patientGroupingName"`
+	PatientGroups []PatientGroup `json:"patientGroups"`
+}
+
 type PatientGrouping struct {
 	Id string `json:"id"`
 	//Disease string `json:disease"`
 	Name string `json:"patientGroupingName"`
 	PatientGroupingIds []string `json:"patientGroupingIds"`
+	//PatientGroups []PatientGroup `json:"patientGroups"`
+}
+
+type PatientGroup struct{
+	Id string `json:"id"`
+	Name string `json:"patientGroupName"`
+	AssessmentValues []AssessmentValue `json:"assessmentValues"`
+}
+
+func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		diseaseStringId := vars["id"]
+
+		entity_id_int, _ := strconv.ParseInt(diseaseStringId, 10, 64)
+		key := datastore.NewKey(c, "Disease", "", entity_id_int, nil)
+
+		q := datastore.NewQuery("Disease").Filter("__key__ =", key)
+		t := q.Run(c)
+		var theDisease Disease
+
+		for {
+			_, err := t.Next(&theDisease)
+			theDisease.Id= diseaseStringId
+			if err == datastore.Done {
+
+				//get PatientGroupings
+				q = datastore.NewQuery("PatientGrouping").Ancestor(key)
+				var patientGroupings []PatientGrouping
+				//patientGroupingsKeys, error := q.GetAll(c, &patientGroupings)
+				pgKeys, error := q.GetAll(c, &patientGroupings)
+				//set Ids
+				for i, _ := range patientGroupings {
+					pgKey := pgKeys[i]
+					pgId := strconv.FormatInt(pgKey.IntID(), 10)
+					c.Infof("*** pgId: %s", pgId)
+					patientGroupings[i].Id= pgId
+				}
+
+				if error != nil {
+					c.Errorf("error fetching PatientGroupings in GetDiseaseTx: %v", error)
+					break
+				}
+				var patientGroupingsTx []PatientGroupingTx
+
+				var patientGroups []PatientGroup
+				for i, _ := range patientGroupings{
+					patientGroupingName := patientGroupings[i].Name
+					patientGroupingId := patientGroupings[i].Id
+					for j, _ := range patientGroupings[i].PatientGroupingIds{
+						patientGroupStringId := patientGroupings[i].PatientGroupingIds[j]
+						pg_entity_id_int, _ := strconv.ParseInt(patientGroupStringId, 10, 64)
+						patientGroupKey := datastore.NewKey(c, "PatientGroup", "", pg_entity_id_int, nil)
+
+						q = datastore.NewQuery("PatientGroup").Filter("__key__ =", patientGroupKey)
+						t = q.Run(c)
+						var aPatientGroup PatientGroup
+						_, error = t.Next(&aPatientGroup)
+						patientGroups= append(patientGroups, aPatientGroup)
+						if error != nil {
+							c.Errorf("error fetching a PatientGroup in GetDiseaseTx: %v", error)
+							break
+						}
+
+					}
+					pgTx := PatientGroupingTx{patientGroupingId, theDisease, patientGroupingName, patientGroups}
+					patientGroupingsTx = append(patientGroupingsTx, pgTx)
+
+				}
+				c.Infof("*** final PGs: %s", patientGroupingsTx)
+
+				gorca.WriteJSON(c, w, r, patientGroupingsTx)
+				break // No further entities match the query.
+			}
+			if err != nil {
+				c.Errorf("error fetching next Disease in GetPatientGroupings: %v", err)
+				break
+			}
+		}
+	}
 }
 
 func NewPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
@@ -275,7 +378,6 @@ func GetDiseaseById(w http.ResponseWriter, r *http.Request) {
 					assessmentValues[i].Id= id
 				}
 
-				//c.Infof("*** assessmentValues %v", assessmentValues)
 				result.AssessmentValues= assessmentValues
 
 				gorca.WriteJSON(c, w, r, result)
@@ -363,6 +465,7 @@ func GetDiseases(w http.ResponseWriter, r *http.Request) {
 		var diseases []Disease
 		keys, err := q.GetAll(c, &diseases)
 		if err != nil {
+			c.Infof("*** GD: %s", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

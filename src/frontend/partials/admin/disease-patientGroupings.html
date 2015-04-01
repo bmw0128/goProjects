@@ -23,15 +23,14 @@
             </thead>
 
             <tbody>
-            <!--
-            <tr ng-repeat="combo in disease.patientGroupCombos | filter:search | orderBy:'comboName'">
-            -->
-            <tr ng-repeat="(key, value) in disease.patientGroupCombos">
+
+            <tr ng-repeat="patientGrouping in patientGroupings">
+
                 <td class="nameCell">
                     <!--
                     <a href="#/admin/diseaseManagement/patientGroupCombos/detail/{{combo.id}}">{{combo.comboName}}</a>
                     -->
-                    {{key}} {{value}}
+                    {{patientGrouping.patientGroupingName}}
                 </td>
                 <td class="actionCell">
                     <!--

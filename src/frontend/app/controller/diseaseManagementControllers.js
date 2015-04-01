@@ -23,12 +23,12 @@ app.config(function($routeProvider, RestangularProvider) {
             }
         }).
 
-        when('/admin/diseaseManagement/tx/:id',{
-            controller:DiseaseTxCtrl,
-            templateUrl: 'frontend/partials/admin/disease-tx.html',
+        when('/admin/diseaseManagement/patientGroupings/:id',{
+            controller:PatientGroupingsCtrl,
+            templateUrl: 'frontend/partials/admin/disease-patientGroupings.html',
             resolve: {
-                disease: function(Restangular, $route){
-                    var theRoute= 'diseases/' + $route.current.params.id + '/';
+                patientGroupings: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.id + '/patientGroupings';
                     return Restangular.one(theRoute).get();
                 }
             }
@@ -58,12 +58,27 @@ app.config(function($routeProvider, RestangularProvider) {
 
 });
 
-function DiseaseTxCtrl($scope, $location, Restangular, disease, $filter, $http){
+function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
 
-    if(disease.patientGroupCombos == null)
-        disease.patientGroupCombos= [];
+    console.log("*** PGs: %s", JSON.stringify(patientGroupings));
+    $scope.patientGroupings= patientGroupings;
+    //$scope.disease= $scope.patientGroupings[0];
+    /*
+    var m= disease.patientGroupings;
+    console.log("*** m: %s", JSON.stringify(m));
+    var patientGrouping= {};
+    for (var key in m) {
+        if (m.hasOwnProperty(key)) {
+            console.log(key + " -> " + m[key]);
+            patientGrouping['name']= key;
+            //patientGrouping['patientGroups]
+        }
+    }
+    disease.patientGroupings.push(patientGrouping);
+
 
     $scope.disease = disease;
+    */
 
     /*
     var m= {};
