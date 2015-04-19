@@ -58,11 +58,24 @@ app.config(function($routeProvider, RestangularProvider) {
 
 });
 
+/**
+ * Example PatientGroupings:
+ *
+ * [{"id":"5649050225344512","Disease":{"id":"5706163895140352","diseaseName":"hypertension",
+ *      "aliasNames":["essential hypertension","htn"],"assessmentValues":[{"id":"","assessmentId":"5742796208078848",
+ *          "operator":"gt","value":"90"},{"id":"","assessmentId":"5664902681198592","operator":"gt","value":"140"}]},
+ *      "patientGroupingName":"firstgrouping","patientGroups":[{"id":"5642554087309312","patientGroupName":"bp stage 1 htn","assessmentValues":null},
+ *          {"id":"5760820306771968","patientGroupName":"no comorbidity","assessmentValues":null}]}]
+ */
 function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
 
     console.log("*** PGs: %s", JSON.stringify(patientGroupings));
     $scope.patientGroupings= patientGroupings;
-    //$scope.disease= $scope.patientGroupings[0];
+    //console.log("*** patinetGroups D: %s", patientGroupings[0].Disease.id);
+
+    $scope.disease= patientGroupings[0].Disease;
+    console.log("*** disease.id: %s", $scope.disease.id);
+
     /*
     var m= disease.patientGroupings;
     console.log("*** m: %s", JSON.stringify(m));
@@ -108,6 +121,8 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
     }
     */
     $scope.disease = disease;
+
+    console.log("*** disease in newPG: " + JSON.stringify($scope.disease));
 
     if($scope.selectedPatientGroups == null)
         $scope.selectedPatientGroups= [];
