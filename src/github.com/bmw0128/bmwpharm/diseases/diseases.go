@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/icub3d/gorca"
 	"github.com/bmw0128/bmwpharm/clients"
+
 )
 
 func MakeMuxer(prefix string) http.Handler {
@@ -34,6 +35,7 @@ func MakeMuxer(prefix string) http.Handler {
 	//m.HandleFunc("/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
 
 	m.HandleFunc("/{diseaseId}/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
+	m.HandleFunc("/patientGroupingCombo/{patientGroupingComboId}/", GetPatientGroupingCombo).Methods("GET")
 
 	// Everything else should 404.
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
@@ -104,6 +106,7 @@ func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
 		diseaseStringId := vars["id"]
 
 		entity_id_int, _ := strconv.ParseInt(diseaseStringId, 10, 64)
+
 		key := datastore.NewKey(c, "Disease", "", entity_id_int, nil)
 
 		q := datastore.NewQuery("Disease").Filter("__key__ =", key)
@@ -171,6 +174,23 @@ func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+func GetPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	if(!clients.ClientIsAdmin(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
+	}else {
+
+		vars := mux.Vars(r)
+		patientGroupingComboId := vars["patientGroupingComboId"]
+		c.Infof("*** editing a PG for id: %s", patientGroupingComboId)
+	}
+}
+
 func NewPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
 
 	c := appengine.NewContext(r)
@@ -179,7 +199,7 @@ func NewPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
 	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
 
 	if(!clients.ClientIsAdmin(loggedInClient)){
-		gorca.WriteJSON(c, w, r, http.StatusNotFound)
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
 	}else {
 
 		//Get the Key.
@@ -219,7 +239,7 @@ func EditDisease(w http.ResponseWriter, r *http.Request){
 	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
 
 	if(!clients.ClientIsAdmin(loggedInClient)){
-		gorca.WriteJSON(c, w, r, http.StatusNotFound)
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
 	}else {
 
 		/*testing

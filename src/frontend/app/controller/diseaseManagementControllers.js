@@ -45,6 +45,18 @@ app.config(function($routeProvider, RestangularProvider) {
             }
         }).
 
+        when('/admin/diseaseManagement/patientGroupingCombo/:id',{
+            controller:DiseasePatientGroupComboCtrl,
+            templateUrl: 'frontend/partials/admin/disease-newPatientGroupCombo.html',
+            resolve: {
+                patientGroupingCombo: function(Restangular, $route){
+                    var theRoute= 'diseases/patientGroupingCombo/' + $route.current.params.id + '/';
+                    return Restangular.one(theRoute).get();
+                }
+            }
+
+        }).
+
         when('/admin/diseaseManagement/detail/:id',{
             controller:DiseaseDetailCtrl,
             templateUrl: 'frontend/partials/admin/disease-detail.html',
@@ -69,12 +81,12 @@ app.config(function($routeProvider, RestangularProvider) {
  */
 function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
 
-    console.log("*** PGs: %s", JSON.stringify(patientGroupings));
+    //console.log("*** PGs: %s", JSON.stringify(patientGroupings));
     $scope.patientGroupings= patientGroupings;
-    //console.log("*** patinetGroups D: %s", patientGroupings[0].Disease.id);
+    //console.log("*** patientGroups D: %s", patientGroupings[0].Disease.id);
 
     $scope.disease= patientGroupings[0].Disease;
-    console.log("*** disease.id: %s", $scope.disease.id);
+    //console.log("*** disease.id: %s", $scope.disease.id);
 
     /*
     var m= disease.patientGroupings;
@@ -107,6 +119,12 @@ function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
             $scope.patientGroups = patientGroups;
         });
     */
+}
+
+function DiseasePatientGroupComboCtrl($scope, $location, Restangular, patientGroupingCombo) {
+
+    console.log("*** DiseasePatientGroupComboCtrl ");
+
 }
 
 function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, disease){
