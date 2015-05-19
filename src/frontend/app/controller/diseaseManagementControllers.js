@@ -34,23 +34,27 @@ app.config(function($routeProvider, RestangularProvider) {
             }
         }).
 
-        when('/admin/diseaseManagement/patientGroupCombos/new/:id',{
+        when('/admin/diseaseManagement/disease/:diseaseId/patientGroupCombos/new/',{
             controller:DiseaseNewPatientGroupCombosCtrl,
             templateUrl: 'frontend/partials/admin/disease-newPatientGroupCombo.html',
             resolve: {
                 disease: function(Restangular, $route){
-                    var theRoute= 'diseases/' + $route.current.params.id + '/';
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
                     return Restangular.one(theRoute).get();
                 }
             }
         }).
 
-        when('/admin/diseaseManagement/patientGroupingCombo/:id',{
-            controller:DiseasePatientGroupComboCtrl,
-            templateUrl: 'frontend/partials/admin/disease-newPatientGroupCombo.html',
+        when('/admin/diseaseManagement/disease/:diseaseId/patientGroupingCombo/edit/:pgId',{
+            controller:DiseaseEditPatientGroupingComboCtrl,
+            templateUrl: 'frontend/partials/admin/disease-editPatientGroupCombo.html',
             resolve: {
                 patientGroupingCombo: function(Restangular, $route){
-                    var theRoute= 'diseases/patientGroupingCombo/' + $route.current.params.id + '/';
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/patientGroupingCombo/' + $route.current.params.pgId + '/';
+                    return Restangular.one(theRoute).get();
+                },
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
                     return Restangular.one(theRoute).get();
                 }
             }
@@ -121,26 +125,69 @@ function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
     */
 }
 
-function DiseasePatientGroupComboCtrl($scope, $location, Restangular, patientGroupingCombo) {
+function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, patientGroupingCombo, disease) {
 
-    console.log("*** DiseasePatientGroupComboCtrl ");
+    $scope.patientGroupingCombo= patientGroupingCombo;
+    //console.log("*** patientGroupingCombo: %s", JSON.stringify($scope.patientGroupingCombo));
+
+    $scope.disease = disease;
+
+    /*
+    if($scope.selectedPatientGroups == null)
+        $scope.selectedPatientGroups= [];
+   */
+
+    Restangular.all('patientGroups').getList().then(
+        function(patientGroups) {
+            $scope.patientGroups = patientGroups;
+        });
+
+    $scope.cancel= function(){
+        $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
+    };
+
+    $scope.removePatientGroup= function(patientGroupId){
+
+        for(var i=0; i <= $scope.patientGroupingCombo.patientGroups.length; i++){
+            var pgId= $scope.patientGroupingCombo.patientGroups[i].id;
+            if(pgId === patientGroupId){
+                $scope.patientGroupingCombo.patientGroups.splice(i, 1);
+            }
+        }
+    };
+
+    $scope.addPatientGroup= function(obj){
+
+        console.log("*** In addPatientGroup...patientGroupingCombo: %s", JSON.stringify($scope.patientGroupingCombo));
+
+        $scope.modeldisplay= '';
+        var typeAheadPatientGroupName= obj.target.attributes.data.value;
+
+        if($scope.patientGroupingCombo.patientGroups == null)
+            $scope.patientGroupingCombo.patientGroups= [];
+
+        //see if name is already in the group
+        var okToAdd= true;
+        for(var i=0; i < $scope.patientGroupingCombo.patientGroups.length; i++){
+
+            var pgName= $scope.patientGroupingCombo.patientGroups[i].patientGroupName;
+            if(pgName.toLowerCase() === typeAheadPatientGroupName){
+                okToAdd= false;
+                break;
+            }
+
+        }
+        if(okToAdd){
+            var patientGroupToAdd= {"patientGroupName":typeAheadPatientGroupName};
+            $scope.patientGroupingCombo.patientGroups.push(patientGroupToAdd);
+        }
+    };
 
 }
 
 function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, disease){
 
-    /*
-    if(disease.patientGroupCombos == null){
-        disease.patientGroupCombos= new Map();
-    }
-
-    if($scope.patientGroupCombo == null){
-        $scope.patientGroupCombo= new Map();
-    }
-    */
     $scope.disease = disease;
-
-    console.log("*** disease in newPG: " + JSON.stringify($scope.disease));
 
     if($scope.selectedPatientGroups == null)
         $scope.selectedPatientGroups= [];
@@ -188,8 +235,7 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
     };
 
     $scope.cancel= function(){
-        var diseaseId= $scope.disease.id;
-        $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+        $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
     };
 
     $scope.save= function(){

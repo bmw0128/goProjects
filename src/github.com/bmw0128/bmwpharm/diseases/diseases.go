@@ -32,10 +32,9 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/{id}/", DeleteDisease).Methods("DELETE")
 	m.HandleFunc("/new", CreateDisease).Methods("POST")
 	m.HandleFunc("/edit", EditDisease).Methods("POST")
-	//m.HandleFunc("/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
 
 	m.HandleFunc("/{diseaseId}/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
-	m.HandleFunc("/patientGroupingCombo/{patientGroupingComboId}/", GetPatientGroupingCombo).Methods("GET")
+	m.HandleFunc("/{diseaseId}/patientGroupingCombo/{pgId}/", GetPatientGroupingComboById).Methods("GET")
 
 	// Everything else should 404.
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
@@ -87,6 +86,13 @@ type PatientGrouping struct {
 	//PatientGroups []PatientGroup `json:"patientGroups"`
 }
 
+type PatientGroupingCombo struct {
+	Id string `json:"id"`
+	Name string `json:"patientGroupingName"`
+	//PatientGroupingIds []string `json:"patientGroupingIds"`
+	PatientGroups []PatientGroup `json:"patientGroups"`
+}
+
 type PatientGroup struct{
 	Id string `json:"id"`
 	Name string `json:"patientGroupName"`
@@ -121,13 +127,12 @@ func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
 				//get PatientGroupings
 				q = datastore.NewQuery("PatientGrouping").Ancestor(key)
 				var patientGroupings []PatientGrouping
-				//patientGroupingsKeys, error := q.GetAll(c, &patientGroupings)
 				pgKeys, error := q.GetAll(c, &patientGroupings)
 				//set Ids
 				for i, _ := range patientGroupings {
 					pgKey := pgKeys[i]
 					pgId := strconv.FormatInt(pgKey.IntID(), 10)
-					c.Infof("*** pgId: %s", pgId)
+					//c.Infof("*** pgId: %s", pgId)
 					patientGroupings[i].Id= pgId
 				}
 
@@ -161,7 +166,7 @@ func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
 					patientGroupingsTx = append(patientGroupingsTx, pgTx)
 
 				}
-				c.Infof("*** final PGs: %s", patientGroupingsTx)
+				//c.Infof("*** final PGs: %s", patientGroupingsTx)
 
 				gorca.WriteJSON(c, w, r, patientGroupingsTx)
 				break // No further entities match the query.
@@ -174,7 +179,10 @@ func GetPatientGroupings(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func GetPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
+/**
+ PatientGroupingCombo has an id, name, and holds patient groups
+ */
+func GetPatientGroupingComboById(w http.ResponseWriter, r *http.Request){
 
 	c := appengine.NewContext(r)
 
@@ -186,8 +194,41 @@ func GetPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
 	}else {
 
 		vars := mux.Vars(r)
-		patientGroupingComboId := vars["patientGroupingComboId"]
-		c.Infof("*** editing a PG for id: %s", patientGroupingComboId)
+		diseaseId := vars["diseaseId"]
+		pgId := vars["pgId"]
+
+		entity_id_int_pg, _ := strconv.ParseInt(pgId, 10, 64)
+		entity_id_int_di, _ := strconv.ParseInt(diseaseId, 10, 64)
+		parentKey := datastore.NewKey(c, "Disease", "", entity_id_int_di, nil)
+		patientGroupingKey := datastore.NewKey(c, "PatientGrouping", "", entity_id_int_pg, parentKey)
+
+		var thePatientGrouping PatientGrouping
+		err := datastore.Get(c, patientGroupingKey, &thePatientGrouping)
+		if err != nil {
+			c.Errorf("error fetching next PatientGrouping in GetPatientGroupingComboById: %v", err)
+		}
+		thePatientGrouping.Id= pgId
+		var patientGroups = make([]PatientGroup, 0)
+		for _, aPatientGroupId := range thePatientGrouping.PatientGroupingIds {
+			c.Infof("*** aPatientGroupId: %s", aPatientGroupId)
+			entity_id_int, _ := strconv.ParseInt(aPatientGroupId, 10, 64)
+			aKey := datastore.NewKey(c, "PatientGroup", "", entity_id_int, nil)
+			var aPatientGroup PatientGroup
+			err := datastore.Get(c, aKey, &aPatientGroup)
+			if err != nil {
+				c.Errorf("error fetching a PatientGroup in GetPatientGroupingComboById: %v", err)
+			}
+			c.Infof("*** aPatientGroup: %s", aPatientGroup)
+			patientGroups= append(patientGroups, aPatientGroup)
+		}
+		//c.Infof("*** array len: %s", len(patientGroups))
+		//c.Infof("*** array cap: %s", cap(patientGroups))
+		patientGroupingCombo := PatientGroupingCombo{
+											thePatientGrouping.Id,
+											thePatientGrouping.Name,
+											patientGroups,
+										}
+		gorca.WriteJSON(c, w, r, patientGroupingCombo)
 	}
 }
 

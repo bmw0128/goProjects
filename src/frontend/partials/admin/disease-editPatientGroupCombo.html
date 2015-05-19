@@ -1,0 +1,67 @@
+<div ng-show="isAdmin">
+    <form novalidate>
+
+        <div class="row">
+            <div class="small-12 columns">
+                Disease Name: {{disease.diseaseName}}
+            </div>
+        </div>
+
+<div class="row">
+<div class="interactionDrugSearch">
+    <patientgroup-search-typeahead-for-edit />
+</div>
+</div>
+
+        <div class="row">
+        <div class="small-12 columns">
+            <label>Patient Grouping Name
+                <input type="text" id="patientGroupingName" value="{{patientGroupingCombo.patientGroupingName}}"/>
+
+                <input type="hidden" id="patientGroupingComboId" value="{{patientGroupingCombo.id}}"/>
+
+            </label>
+        </div>
+        </div>
+
+
+<div class="row">
+    <div class="small-12 columns divTable">
+
+        <div ng-repeat="patientGroup in patientGroupingCombo.patientGroups | orderBy:'patientGroupName'">
+            <div class="interactionInfoContainer">
+                <div class="interactionButtons">
+                    <button type="button" class="tiny" ng-click="removePatientGroup(patientGroup.id)">Remove</button>
+                    <label>
+                        {{patientGroup.patientGroupName}}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+        </form>
+    </div>
+
+<p>
+
+<div class="row" ng-show="hasValidationErrors">
+    <div class="small-12 columns">
+        <a ng-click="clearValidationErrors()">
+            <label class="error">Validation Error(s) click to clear</label>
+        </a>
+    </div>
+</div>
+
+<p>
+
+<div class="row">
+    <div class="small-12 columns">
+        <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+        <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid">
+            Save
+        </button>
+    </div>
+</div>
