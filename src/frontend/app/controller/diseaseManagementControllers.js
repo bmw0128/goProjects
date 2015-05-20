@@ -158,8 +158,7 @@ function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, pat
 
     $scope.addPatientGroup= function(obj){
 
-        console.log("*** In addPatientGroup...patientGroupingCombo: %s", JSON.stringify($scope.patientGroupingCombo));
-
+        //console.log("*** In addPatientGroup...patientGroupingCombo: %s", JSON.stringify($scope.patientGroupingCombo));
         $scope.modeldisplay= '';
         var typeAheadPatientGroupName= obj.target.attributes.data.value;
 
@@ -181,6 +180,61 @@ function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, pat
             var patientGroupToAdd= {"patientGroupName":typeAheadPatientGroupName};
             $scope.patientGroupingCombo.patientGroups.push(patientGroupToAdd);
         }
+    };
+
+    $scope.save= function(){
+
+        $scope.hasValidationErrors= false;
+
+        var comboName= $('#patientGroupComboName').val();
+
+        if($scope.disease.patientGroupCombos == null){
+            $scope.disease.patientGroupCombos= {};
+        }
+
+        var comboMap= $scope.disease.patientGroupCombos;
+
+        if(comboMap.hasOwnProperty(comboName)){
+            console.log("*** found dup comboName: %s", comboName);
+            $scope.hasValidationErrors= true;
+        }
+        else{
+            console.log("*** NO dup found for: %s", comboName);
+        }
+        //need to check for duplicate patientGroup set
+
+        /*
+         var m= {};
+         m[comboName]= $scope.selectedPatientGroups;
+         $scope.disease.patientGroupCombos= m;
+         */
+
+
+        var s= getJSONNewPatientGroupingComboForEdit($scope);
+        console.log("*** Edit PG post: %s", JSON.stringify(s));
+
+        var diseaseId= $scope.disease.id;
+
+        Restangular.all('diseases/' + diseaseId + '/patientGroupingCombo/' + $scope.patientGroupingCombo.id + "/").post(s).then(
+            function() {
+                $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
+            });
+
+
+
+        /* this was commented out already
+         for (var key in m) {
+         if (m.hasOwnProperty(key)) {
+         console.log(key + " -> " + m[key]);
+         }
+         }
+
+         $.each(m, function(key, value) {
+         console.log("*** printing key/val: ");
+         console.log(key, value);
+         });
+         */
+
     };
 
 }
@@ -209,21 +263,6 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
         var idx= $scope.selectedPatientGroups.indexOf(typeAheadPatientGroupName);
         if(idx === -1)
             $scope.selectedPatientGroups.push(typeAheadPatientGroupName);
-
-        /*
-        if($scope.patient.diseases == null){
-            $scope.patient.diseases= [];
-        }
-
-        for (var j = 0; j < $scope.diseases.length; j++) {
-            var diseaseName = $scope.diseases[j].diseaseName;
-            if (typeAheadDrugName.trim() === diseaseName) {
-                //console.log("*** adding disease from typeahead: %s", JSON.stringify($scope.diseases[j]));
-                $scope.patient.diseases.push($scope.diseases[j]);
-                break;
-            }
-        }
-        */
 
     };
 
@@ -302,6 +341,32 @@ function getJSONNewPatientGroupingCombo($scope){
 
     return {"patientGroupingName":patientGroupingName.toLowerCase(),
             "patientGroupingIds": getPatientGroupingComboIds($scope)};
+}
+
+function getJSONNewPatientGroupingComboForEdit($scope){
+
+    var patientGroupingName= $('#patientGroupingName').val();
+
+    return {"patientGroupingName":patientGroupingName.toLowerCase(),
+            "patientGroupingIds": getPatientGroupingComboIdsForEdit($scope)};
+}
+
+function getPatientGroupingComboIdsForEdit($scope){
+
+    var result= [];
+    for(var i=0; i < $scope.patientGroups.length; i++){
+
+        var id= $scope.patientGroups[i].id;
+        var patientGroupName= $scope.patientGroups[i].patientGroupName;
+
+        for(var k=0; k < $scope.patientGroupingCombo.patientGroups.length; k++){
+            if($scope.patientGroupingCombo.patientGroups[k].patientGroupName.toLowerCase() === patientGroupName.toLowerCase()){
+                result.push(id);
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 function getPatientGroupingComboIds($scope){

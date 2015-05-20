@@ -34,6 +34,7 @@ func MakeMuxer(prefix string) http.Handler {
 	m.HandleFunc("/edit", EditDisease).Methods("POST")
 
 	m.HandleFunc("/{diseaseId}/newPatientGroupingCombo", NewPatientGroupingCombo).Methods("POST")
+	m.HandleFunc("/{diseaseId}/patientGroupingCombo/{pgId}/", EditPatientGroupingCombo).Methods("POST")
 	m.HandleFunc("/{diseaseId}/patientGroupingCombo/{pgId}/", GetPatientGroupingComboById).Methods("GET")
 
 	// Everything else should 404.
@@ -218,7 +219,7 @@ func GetPatientGroupingComboById(w http.ResponseWriter, r *http.Request){
 			if err != nil {
 				c.Errorf("error fetching a PatientGroup in GetPatientGroupingComboById: %v", err)
 			}
-			c.Infof("*** aPatientGroup: %s", aPatientGroup)
+			//c.Infof("*** aPatientGroup: %s", aPatientGroup)
 			patientGroups= append(patientGroups, aPatientGroup)
 		}
 		//c.Infof("*** array len: %s", len(patientGroups))
@@ -229,6 +230,49 @@ func GetPatientGroupingComboById(w http.ResponseWriter, r *http.Request){
 											patientGroups,
 										}
 		gorca.WriteJSON(c, w, r, patientGroupingCombo)
+	}
+}
+
+func EditPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	if(!clients.ClientIsAdmin(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
+	}else {
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		diseaseId := vars["diseaseId"]
+		pgId := vars["pgId"]
+
+		var patientGrouping PatientGrouping
+		defer r.Body.Close()
+		dec := json.NewDecoder(r.Body)
+		dec.Decode(&patientGrouping)
+
+		c.Infof("*** in edit, PG: %s", patientGrouping)
+
+		entity_id_int_pg, _ := strconv.ParseInt(pgId, 10, 64)
+		entity_id_int_di, _ := strconv.ParseInt(diseaseId, 10, 64)
+		parentKey := datastore.NewKey(c, "Disease", "", entity_id_int_di, nil)
+		patientGroupingKey := datastore.NewKey(c, "PatientGrouping", "", entity_id_int_pg, parentKey)
+		c.Infof("*** in edit, patientGroupingKey: %s", patientGroupingKey)
+
+		_, err := datastore.Put(c, patientGroupingKey, &patientGrouping)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		/*testing
+		bytes, _ := ioutil.ReadAll(r.Body)
+		c.Infof("*** EditPatientGroupingCombo bytes: " + string(bytes));
+		//end testing
+		*/
 	}
 }
 
