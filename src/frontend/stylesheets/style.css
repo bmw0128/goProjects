@@ -155,6 +155,20 @@ table tr th div, table tr td div{
     float: left;
 }
 
+.divTableShort{
+    border: 2px solid;
+    border-color: #6f6074;
+    border-radius: 25px;
+    max-height:200px;
+    overflow:auto;
+    float: left;
+}
+
+.highlightLetter{
+    font-weight: bold;
+    text-decoration: underline;
+
+}
 
 
 

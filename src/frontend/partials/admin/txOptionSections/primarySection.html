@@ -1,0 +1,81 @@
+<div ng-show="isAdmin">
+    <form novalidate>
+
+
+        <div class="row">
+            <div class="small-12 columns">
+                Primary Options:
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Group A</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns divTableShort">
+                <div class="interactionDrugSearch">
+                    <tx-drug-search-typeahead-group-a />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Group B</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns divTableShort">
+                <div class="interactionDrugSearch">
+                    <tx-drug-search-typeahead-group-b />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Group C</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns divTableShort">
+                <div class="interactionDrugSearch">
+                    <tx-drug-search-typeahead-group-c />
+                </div>
+            </div>
+        </div>
+
+
+
+    </form>
+</div>
+
+<!--
+<p>
+
+<div class="row" ng-show="hasValidationErrors">
+    <div class="small-12 columns">
+        <a ng-click="clearValidationErrors()">
+            <label class="error">Validation Error(s) click to clear</label>
+        </a>
+    </div>
+</div>
+
+<p>
+
+<div class="row">
+    <div class="small-12 columns">
+        <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+        <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid">
+            Save
+        </button>
+    </div>
+</div>
+-->

@@ -59,6 +59,9 @@ func MakeMuxer(prefix string) http.Handler {
 	// Add the handler for GET /.
 	m.HandleFunc("/", GetDrugs).Methods("GET")
 	m.HandleFunc("/byname/{drugName}/", GetDrugByName).Methods("GET")
+
+	m.HandleFunc("/startsWithLetter/{letter}/", GetDrugByFirstLetter).Methods("GET")
+
 	m.HandleFunc("/{id}/", GetDrugById).Methods("GET")
 	m.HandleFunc("/{id}/", DeleteDrug).Methods("DELETE")
 	m.HandleFunc("/withinteractions/{id}/", GetDrugWithInteractionsById).Methods("GET")
@@ -356,6 +359,75 @@ func GetDrugByName(w http.ResponseWriter, r *http.Request){
 			gorca.WriteJSON(c, w, r, brandNameDrug)
 		}
 	}
+}
+
+func GetDrugByFirstLetter(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		vars := mux.Vars(r)
+		letter := vars["letter"]
+
+		nextLetter := GetNextLetterInAlphabet(letter)
+
+		q := datastore.NewQuery("Drug").Filter("Name >=", letter).Filter("Name <", nextLetter)
+		var drugs []Drug
+
+		_, err := q.GetAll(c, &drugs)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		gorca.WriteJSON(c, w, r, drugs)
+
+	}else{
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
+	}
+}
+
+func GetNextLetterInAlphabet(letter string) string{
+
+	nextLetter := map[string]string{
+		"a": "b",
+		"b": "c",
+		"c": "d",
+		"d": "e",
+
+		"e": "f",
+		"f": "g",
+		"g": "h",
+		"h": "i",
+
+		"i": "j",
+		"j": "k",
+		"k": "l",
+		"l": "m",
+
+		"m": "n",
+		"n": "o",
+		"o": "p",
+		"p": "q",
+
+		"q": "r",
+		"r": "s",
+		"s": "t",
+		"t": "u",
+
+		"u": "v",
+		"v": "w",
+		"w": "x",
+		"x": "y",
+
+		"y": "z",
+		"z": "",
+	}
+
+	return nextLetter[letter]
 }
 
 func GetDrugs(w http.ResponseWriter, r *http.Request){

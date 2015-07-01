@@ -254,13 +254,10 @@ func EditPatientGroupingCombo(w http.ResponseWriter, r *http.Request){
 		dec := json.NewDecoder(r.Body)
 		dec.Decode(&patientGrouping)
 
-		c.Infof("*** in edit, PG: %s", patientGrouping)
-
 		entity_id_int_pg, _ := strconv.ParseInt(pgId, 10, 64)
 		entity_id_int_di, _ := strconv.ParseInt(diseaseId, 10, 64)
 		parentKey := datastore.NewKey(c, "Disease", "", entity_id_int_di, nil)
 		patientGroupingKey := datastore.NewKey(c, "PatientGrouping", "", entity_id_int_pg, parentKey)
-		c.Infof("*** in edit, patientGroupingKey: %s", patientGroupingKey)
 
 		_, err := datastore.Put(c, patientGroupingKey, &patientGrouping)
 		if err != nil {

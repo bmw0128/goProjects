@@ -230,3 +230,198 @@ app.directive('interactionDrugSearchTypeahead', function(){
         + '</div>'
     }
 });
+
+app.directive('txDrugSearchTypeaheadGroupA', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.daA= function(txt){
+
+                //set up to remove the drug names that are taken already
+                /*
+                var drugNamesInUse= [];
+                drugNamesInUse.push(scope.selectedDrug.drugName);
+                if(scope.selectedDrug.interactions != null){
+                    for(var i=0; i < scope.selectedDrug.interactions.length; i++)
+                        drugNamesInUse.push(scope.selectedDrug.interactions[i].drugName);
+                }
+                */
+
+                scope.$watch('drugsPrimaryGroupA', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        //this checks if the drugName is in use already
+                        //if(drugNamesInUse.indexOf(drugName) == -1)
+                            drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataA= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayA" ng-change="daA(modeldisplayA)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayA.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugPrimaryGroupA($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataA" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadGroupB', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.daB= function(txt){
+
+                //set up to remove the drug names that are taken already
+                /*
+                 var drugNamesInUse= [];
+                 drugNamesInUse.push(scope.selectedDrug.drugName);
+                 if(scope.selectedDrug.interactions != null){
+                 for(var i=0; i < scope.selectedDrug.interactions.length; i++)
+                 drugNamesInUse.push(scope.selectedDrug.interactions[i].drugName);
+                 }
+                 */
+
+                scope.$watch('drugsPrimaryGroupB', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        //this checks if the drugName is in use already
+                        //if(drugNamesInUse.indexOf(drugName) == -1)
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataB= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayB" ng-change="daB(modeldisplayB)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayB.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugPrimaryGroupB($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataB" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadGroupC', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.daC= function(txt){
+
+                //set up to remove the drug names that are taken already
+                /*
+                 var drugNamesInUse= [];
+                 drugNamesInUse.push(scope.selectedDrug.drugName);
+                 if(scope.selectedDrug.interactions != null){
+                 for(var i=0; i < scope.selectedDrug.interactions.length; i++)
+                 drugNamesInUse.push(scope.selectedDrug.interactions[i].drugName);
+                 }
+                 */
+
+                scope.$watch('drugsPrimaryGroupC', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        //this checks if the drugName is in use already
+                        //if(drugNamesInUse.indexOf(drugName) == -1)
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataC= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayC" ng-change="daC(modeldisplayC)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayC.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugPrimaryGroupC($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataC" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});

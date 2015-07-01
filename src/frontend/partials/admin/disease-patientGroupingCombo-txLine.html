@@ -1,0 +1,86 @@
+
+<div ng-show="isAdmin">
+    <form novalidate>
+
+        <ul class="off-canvas-list">
+            <li><label ng-click="optionSection('nav')">{{selectedSection}}</label></li>
+        </ul>
+
+        <div>
+            Disease: {{disease.diseaseName}}:{{patientGroupingCombo.patientGroupingName}}
+        </div>
+
+        <br/>
+
+        <div ng-show="navSection">
+        <div class="row">
+            <div class="small-12 columns">
+                <label>Tx Line
+                    <input type="radio" name="txLineNumber" value="first">1st
+                    <input type="radio" name="txLineNumber" value="second">2nd
+                    <input type="radio" name="txLineNumber" value="third">3rd
+                    <input type="text" id="txLineName" value="{{txLineName}}" placeholder="Description..."/>
+                    <input type="hidden" id="txLineId" value="{{txLine.id}}"/>
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns">
+                <textarea id="txLineInfo" placeholder="Information..." rows="4"></textarea>
+            </div>
+        </div>
+        </div>
+
+
+        <ul class="off-canvas-list" ng-show="navSection">
+            <li><a ng-click="optionSection('primary')">Primary</a></li>
+            <li><a ng-click="optionSection('secondary')">Secondary</a></li>
+            <li><a ng-click="optionSection('tertiary')">Tertiary</a></li>
+        </ul>
+
+        <div ng-show="primarySection">
+            <div ng-include="'frontend/partials/admin/txOptionSections/primarySection.html'"></div>
+        </div>
+
+        <div ng-show="secondarySection">
+            <div ng-include="'frontend/partials/admin/txOptionSections/secondarySection.html'"></div>
+        </div>
+
+
+        <div class="row" ng-show="tertiarySection">
+            <div ng-include="'frontend/partials/admin/txOptionSections/tertiarySection.html'"></div>
+        </div>
+
+        <br/>
+
+        <div class="row" ng-show="hasValidationErrors">
+            <div class="small-12 columns">
+                <a ng-click="clearValidationErrors()">
+                    <label class="error">Validation Error(s) click to clear</label>
+                </a>
+            </div>
+        </div>
+
+        <br/>
+
+        <div class="row" ng-show="navSection">
+            <div class="small-12 columns">
+                <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
+                <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean()
+                                                                            || myForm.$invalid
+                                                                            || hasValidationErrors">
+                    Save
+                </button>
+                <button ng-click="delete()" ng-show="patient.id" class="tiny">Delete</button>
+
+            </div>
+        </div>
+
+
+    </form>
+
+    <!-- used to fire pageLoaded() only -->
+    <span ng-show="pageLoaded()"></span>
+
+</div>

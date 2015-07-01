@@ -27,6 +27,10 @@ app.config(function($routeProvider, RestangularProvider) {
             controller:PatientGroupingsCtrl,
             templateUrl: 'frontend/partials/admin/disease-patientGroupings.html',
             resolve: {
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.id + '/';
+                    return Restangular.one(theRoute).get();
+                },
                 patientGroupings: function(Restangular, $route){
                     var theRoute= 'diseases/' + $route.current.params.id + '/patientGroupings';
                     return Restangular.one(theRoute).get();
@@ -61,6 +65,22 @@ app.config(function($routeProvider, RestangularProvider) {
 
         }).
 
+        when('/admin/diseaseManagement/disease/:diseaseId/patientGroupingCombo/:pgId/tx/new',{
+            controller:DiseasePatientGroupingComboNewTxCtrl,
+            templateUrl: 'frontend/partials/admin/disease-patientGroupingCombo-txLine.html',
+            resolve: {
+                patientGroupingCombo: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/patientGroupingCombo/' + $route.current.params.pgId + '/';
+                    return Restangular.one(theRoute).get();
+                },
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
+                    return Restangular.one(theRoute).get();
+                }
+            }
+
+        }).
+
         when('/admin/diseaseManagement/detail/:id',{
             controller:DiseaseDetailCtrl,
             templateUrl: 'frontend/partials/admin/disease-detail.html',
@@ -74,55 +94,47 @@ app.config(function($routeProvider, RestangularProvider) {
 
 });
 
-/**
- * Example PatientGroupings:
- *
- * [{"id":"5649050225344512","Disease":{"id":"5706163895140352","diseaseName":"hypertension",
- *      "aliasNames":["essential hypertension","htn"],"assessmentValues":[{"id":"","assessmentId":"5742796208078848",
- *          "operator":"gt","value":"90"},{"id":"","assessmentId":"5664902681198592","operator":"gt","value":"140"}]},
- *      "patientGroupingName":"firstgrouping","patientGroups":[{"id":"5642554087309312","patientGroupName":"bp stage 1 htn","assessmentValues":null},
- *          {"id":"5760820306771968","patientGroupName":"no comorbidity","assessmentValues":null}]}]
- */
-function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings){
 
-    //console.log("*** PGs: %s", JSON.stringify(patientGroupings));
-    $scope.patientGroupings= patientGroupings;
-    //console.log("*** patientGroups D: %s", patientGroupings[0].Disease.id);
-
-    $scope.disease= patientGroupings[0].Disease;
-    //console.log("*** disease.id: %s", $scope.disease.id);
-
-    /*
-    var m= disease.patientGroupings;
-    console.log("*** m: %s", JSON.stringify(m));
-    var patientGrouping= {};
-    for (var key in m) {
-        if (m.hasOwnProperty(key)) {
-            console.log(key + " -> " + m[key]);
-            patientGrouping['name']= key;
-            //patientGrouping['patientGroups]
-        }
-    }
-    disease.patientGroupings.push(patientGrouping);
-
+function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, patientGroupingCombo, disease){
 
     $scope.disease = disease;
-    */
+    $scope.patientGroupingCombo= patientGroupingCombo;
 
-    /*
-    var m= {};
-    m['foobar']= ['me', 'my'];
-    m['sss']= ['she', 'him'];
-
-    $scope.disease.patientGroupCombos= m;
-    */
-
-    /*
-    Restangular.all('patientGroups').getList().then(
-        function(patientGroups) {
-            $scope.patientGroups = patientGroups;
+    //load the drugs here
+    Restangular.all('drugs').getList().then(
+        function(drugs) {
+            $scope.drugsPrimaryGroupA= drugs;
         });
-    */
+    //load the drugs here
+    Restangular.all('drugs').getList().then(
+        function(drugs) {
+            $scope.drugsPrimaryGroupB= drugs;
+        });
+    //load the drugs here
+    Restangular.all('drugs').getList().then(
+        function(drugs) {
+            $scope.drugsPrimaryGroupC= drugs;
+        });
+
+
+    setUpTxOptionSections($scope);
+
+    $scope.cancel= function(){
+        $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
+    };
+
+    $scope.addDrugPrimaryGroupA= function(obj){
+        console.log("*** a");
+    };
+
+    $scope.addDrugPrimaryGroupB= function(obj){
+        console.log("*** b");
+    };
+
+    $scope.addDrugPrimaryGroupC= function(obj){
+        console.log("*** c");
+    };
+
 }
 
 function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, patientGroupingCombo, disease) {
@@ -239,6 +251,60 @@ function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, pat
 
 }
 
+/**
+ * Example PatientGroupings:
+ *
+ * [{"id":"5649050225344512","Disease":{"id":"5706163895140352","diseaseName":"hypertension",
+ *      "aliasNames":["essential hypertension","htn"],"assessmentValues":[{"id":"","assessmentId":"5742796208078848",
+ *          "operator":"gt","value":"90"},{"id":"","assessmentId":"5664902681198592","operator":"gt","value":"140"}]},
+ *      "patientGroupingName":"firstgrouping","patientGroups":[{"id":"5642554087309312","patientGroupName":"bp stage 1 htn","assessmentValues":null},
+ *          {"id":"5760820306771968","patientGroupName":"no comorbidity","assessmentValues":null}]}]
+ */
+function PatientGroupingsCtrl($scope, $location, Restangular, patientGroupings, disease){
+
+    $scope.disease = disease;
+
+    //console.log("*** PGs: %s", JSON.stringify(patientGroupings));
+    $scope.patientGroupings= patientGroupings;
+    //console.log("*** patientGroups D: %s", patientGroupings[0].Disease.id);
+
+    //$scope.disease= patientGroupings[0].Disease;
+    //console.log("*** disease.id: %s", $scope.disease.id);
+
+
+    /*
+     var m= disease.patientGroupings;
+     console.log("*** m: %s", JSON.stringify(m));
+     var patientGrouping= {};
+     for (var key in m) {
+     if (m.hasOwnProperty(key)) {
+     console.log(key + " -> " + m[key]);
+     patientGrouping['name']= key;
+     //patientGrouping['patientGroups]
+     }
+     }
+     disease.patientGroupings.push(patientGrouping);
+
+
+     $scope.disease = disease;
+     */
+
+    /*
+     var m= {};
+     m['foobar']= ['me', 'my'];
+     m['sss']= ['she', 'him'];
+
+     $scope.disease.patientGroupCombos= m;
+     */
+
+    /*
+     Restangular.all('patientGroups').getList().then(
+     function(patientGroups) {
+     $scope.patientGroups = patientGroups;
+     });
+     */
+}
+
 function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, disease){
 
     $scope.disease = disease;
@@ -312,7 +378,7 @@ function DiseaseNewPatientGroupCombosCtrl($scope, $location, Restangular, diseas
 
         Restangular.all('diseases/' + diseaseId + '/newPatientGroupingCombo').post(s).then(
             function() {
-                $location.path('/admin/diseaseManagement/tx/' + diseaseId);
+                $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
             });
 
 
@@ -820,4 +886,45 @@ function getAliasNames($scope){
 
 function DiseaseDetailCtrl(){
 
+}
+
+function setUpTxOptionSections($scope){
+
+    $scope.selectedSection= "Drug Option Sections";
+    $scope.navSection= true;
+    $scope.primarySection= false;
+    $scope.secondarySection= false;
+    $scope.tertiarySection= false;
+
+    $scope.optionSection= function(section){
+        if(section === 'nav'){
+            $scope.selectedSection= "Drug Option Sections";
+            $scope.navSection= true;
+            $scope.primarySection= false;
+            $scope.secondarySection= false;
+            $scope.tertiarySection= false;
+        }
+        if(section === 'primary'){
+            $scope.selectedSection= "Selected Drug Section: Primary...click to go back";
+            $scope.navSection= false;
+            $scope.primarySection= true;
+            $scope.secondarySection= false;
+            $scope.tertiarySection= false;
+        }
+        if(section === 'secondary'){
+            $scope.selectedSection= "Selected Drug Section: Secondary...click to go back";
+            $scope.navSection= false;
+            $scope.primarySection= false;
+            $scope.secondarySection= true;
+            $scope.tertiarySection= false;
+        }
+        if(section === 'tertiary'){
+            $scope.selectedSection= "Selected Drug Section: Tertiary...click to go back";
+            $scope.navSection= false;
+            $scope.primarySection= false;
+            $scope.secondarySection= false;
+            $scope.tertiarySection= true;
+        }
+
+    }
 }

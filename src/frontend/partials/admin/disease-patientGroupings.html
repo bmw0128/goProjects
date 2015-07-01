@@ -19,6 +19,7 @@
                     <i class="foundicon-plus"></i></a>
                 </th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
 
@@ -27,19 +28,13 @@
             <tr ng-repeat="patientGrouping in patientGroupings">
 
                 <td class="nameCell">
-                    <!--
-                    <a href="#/admin/diseaseManagement/patientGroupCombos/detail/{{combo.id}}">{{combo.comboName}}</a>
-                    -->
                     {{patientGrouping.patientGroupingName}}
                 </td>
                 <td class="actionCell">
-                    <!--
-                    <a href="#/admin/diseaseManagement/patientGroupCombos/edit/{{combo.id}}"><i class="foundicon-edit"></i></a>
-                    -->
                     <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/edit/{{patientGrouping.id}}"><i class="foundicon-edit"></i></a>
-                    <!--
-                    me
-                    -->
+                </td>
+                <td class="nameCell">
+                    <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/{{patientGrouping.id}}/tx/new">Tx</a>
                 </td>
             </tr>
             </tbody>
