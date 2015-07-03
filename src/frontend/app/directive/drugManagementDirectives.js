@@ -231,7 +231,7 @@ app.directive('interactionDrugSearchTypeahead', function(){
     }
 });
 
-app.directive('txDrugSearchTypeaheadGroupA', function(){
+app.directive('txDrugSearchTypeaheadPrimaryGroupA', function(){
 
     return{
         restrict: 'AEC',
@@ -296,7 +296,7 @@ app.directive('txDrugSearchTypeaheadGroupA', function(){
     }
 });
 
-app.directive('txDrugSearchTypeaheadGroupB', function(){
+app.directive('txDrugSearchTypeaheadPrimaryGroupB', function(){
 
     return{
         restrict: 'AEC',
@@ -361,7 +361,7 @@ app.directive('txDrugSearchTypeaheadGroupB', function(){
     }
 });
 
-app.directive('txDrugSearchTypeaheadGroupC', function(){
+app.directive('txDrugSearchTypeaheadPrimaryGroupC', function(){
 
     return{
         restrict: 'AEC',
@@ -425,3 +425,325 @@ app.directive('txDrugSearchTypeaheadGroupC', function(){
         + '</div>'
     }
 });
+//end Primary Drugs
+
+//Secondary Drugs
+app.directive('txDrugSearchTypeaheadSecondaryGroupA', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dSecA= function(txt){
+
+                scope.$watch('drugsSecondaryGroupA', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataSecondaryA= result;
+                    }
+                });
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplaySecA" ng-change="dSecA(modeldisplaySecA)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplaySecA.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugSecondaryGroupA($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataSecondaryA" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadSecondaryGroupB', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dSecB= function(txt){
+
+                scope.$watch('drugsSecondaryGroupB', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataSecondaryB= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplaySecB" ng-change="dSecB(modeldisplaySecB)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplaySecB.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugSecondaryGroupB($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataSecondaryB" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadSecondaryGroupC', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dSecC= function(txt){
+
+                scope.$watch('drugsSecondaryGroupC', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataSecondaryC= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplaySecC" ng-change="dSecC(modeldisplaySecC)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplaySecC.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugSecondaryGroupC($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataSecondaryC" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+//end Secondary Drugs
+
+//Tertiary Drugs
+app.directive('txDrugSearchTypeaheadTertiaryGroupA', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dTerA= function(txt){
+
+                scope.$watch('drugsTertiaryGroupA', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataTertiaryA= result;
+                    }
+                });
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayTerA" ng-change="dTerA(modeldisplayTerA)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayTerA.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugTertiaryGroupA($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataTertiaryA" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadTertiaryGroupB', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dTerB= function(txt){
+
+                scope.$watch('drugsTertiaryGroupB', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataTertiaryB= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayTerB" ng-change="dTerB(modeldisplayTerB)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayTerB.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugTertiaryGroupB($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataTertiaryB" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+
+app.directive('txDrugSearchTypeaheadTertiaryGroupC', function(){
+
+    return{
+        restrict: 'AEC',
+
+        link: function(scope, elem, attr){
+
+            scope.dTerC= function(txt){
+
+                scope.$watch('drugsTertiaryGroupC', function(newValue, oldValue) {
+                    var drugNames = [];
+                    var errorVars = {};
+                    var result= [];
+                    for (var i = 0; i < newValue.length; i++) {
+                        var drugName= newValue[i].drugName;
+                        drugNames.push(drugName);
+                    }
+
+                    if(drugNames.length > 0) {
+                        for(var j= 0; j< drugNames.length; j++){
+                            if(drugNames[j].startsWith(txt.toLowerCase())){
+                                result.push(drugNames[j]);
+                            }
+                        }
+                        result.sort();
+                        scope.TypeAheadDataTertiaryC= result;
+                    }
+                });
+
+            }
+
+        },
+        template: '<div id="interactionDrugSearchContainer"><input type="text" ng-model="modeldisplayTerC" ng-change="dTerC(modeldisplayTerC)" '
+        + 'class="search-query" placeholder="Search for a drug to add...">'
+
+        + '<div class="typeaheadResultsDiv" '
+        + ' ng-hide="!modeldisplayTerC.length || selected" style="width:100%">'
+
+        + '<a ng-click="addDrugTertiaryGroupC($event)" data="{{item}}" '
+        + ' ng-repeat="item in TypeAheadDataTertiaryC" '
+
+        + '>'
+
+        + ' {{item}}<br />'
+        + '</a> '
+        + '</div>'
+
+        + '</input>'
+
+        + '</div>'
+    }
+});
+//end Tertiary Drugs
+

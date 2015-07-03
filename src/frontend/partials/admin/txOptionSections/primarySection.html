@@ -19,10 +19,27 @@
         <div class="row">
             <div class="small-12 columns divTableShort">
                 <div class="interactionDrugSearch">
-                    <tx-drug-search-typeahead-group-a />
+                    <tx-drug-search-typeahead-primary-group-a />
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+
+                <div ng-repeat="drug in selectedDrugsPrimaryGroupA | orderBy:'drug'">
+                    <div class="interactionInfoContainer">
+                        <div class="interactionButtons">
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupA(drug)">Remove</button>
+                            <label>
+                                {{drug}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="small-12 columns">
@@ -33,10 +50,27 @@
         <div class="row">
             <div class="small-12 columns divTableShort">
                 <div class="interactionDrugSearch">
-                    <tx-drug-search-typeahead-group-b />
+                    <tx-drug-search-typeahead-primary-group-b />
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+
+                <div ng-repeat="drug in selectedDrugsPrimaryGroupB | orderBy:'drug'">
+                    <div class="interactionInfoContainer">
+                        <div class="interactionButtons">
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupB(drug)">Remove</button>
+                            <label>
+                                {{drug}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="small-12 columns">
@@ -47,35 +81,27 @@
         <div class="row">
             <div class="small-12 columns divTableShort">
                 <div class="interactionDrugSearch">
-                    <tx-drug-search-typeahead-group-c />
+                    <tx-drug-search-typeahead-primary-group-c />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="small-12 columns divTable">
+
+                <div ng-repeat="drug in selectedDrugsPrimaryGroupC | orderBy:'drug'">
+                    <div class="interactionInfoContainer">
+                        <div class="interactionButtons">
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupC(drug)">Remove</button>
+                            <label>
+                                {{drug}}
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
 
-
     </form>
 </div>
-
-<!--
-<p>
-
-<div class="row" ng-show="hasValidationErrors">
-    <div class="small-12 columns">
-        <a ng-click="clearValidationErrors()">
-            <label class="error">Validation Error(s) click to clear</label>
-        </a>
-    </div>
-</div>
-
-<p>
-
-<div class="row">
-    <div class="small-12 columns">
-        <button type="button" class="tiny" ng-click="cancel()">Cancel</button>
-        <button type="button" class="tiny" ng-click="save()" ng-disabled="isClean() || myForm.$invalid">
-            Save
-        </button>
-    </div>
-</div>
--->
