@@ -1,0 +1,48 @@
+
+<div ng-show="isAdmin">
+    <p>
+    <div class="row">
+        <div class="small-12 columns">
+            Disease Name: {{disease.diseaseName}}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="small-12 columns">
+
+            <table class="listingTable">
+
+                <thead>
+                <tr>
+                    <th>TxLines<a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/{{patientGrouping.id}}/tx/new">
+                        <i class="foundicon-plus"></i></a>
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <!--
+                <tr ng-repeat="txLine in txLines">
+
+                    <td class="nameCell">
+                        {{txLine.number}} - {{txLine.name}}
+                    </td>
+                    <td class="actionCell">
+                        <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/edit/{{patientGrouping.id}}"><i class="foundicon-edit"></i></a>
+                    </td>
+                    <td class="nameCell">
+                        <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/{{patientGrouping.id}}/tx/list">TxLines</a>
+                    </td>
+                </tr>
+                -->
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>

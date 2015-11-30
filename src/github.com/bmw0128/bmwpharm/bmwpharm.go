@@ -19,8 +19,7 @@ import (
 	"github.com/bmw0128/bmwpharm/assessments"
 	//"log"
 	//"encoding/json"
-
-
+	"github.com/bmw0128/bmwpharm/txline"
 )
 
 func init() {
@@ -52,6 +51,8 @@ func init() {
 	http.Handle("/rest/v1/patientGroups/", patientGroups.MakeMuxer("/rest/v1/patientGroups/"))
 
 	http.Handle("/rest/v1/assessments/", assessments.MakeMuxer("/rest/v1/assessments/"))
+
+	http.Handle("/rest/v1/txline/", txline.MakeMuxer("/rest/v1/txline/"))
 
 
 }

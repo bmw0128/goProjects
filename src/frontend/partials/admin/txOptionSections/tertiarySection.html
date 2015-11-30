@@ -1,3 +1,7 @@
+<!--
+ part of disease-patientGroupingCombo-txLine.html
+-->
+
 <div ng-show="isAdmin">
     <form novalidate>
 
@@ -32,7 +36,7 @@
                         <div class="interactionButtons">
                             <button type="button" class="tiny" ng-click="removeDrugTertiaryGroupA(drug)">Remove</button>
                             <label>
-                                {{drug}}
+                                {{drug}} - <input type="text" id="dosageTertiaryGroupA-{{drug}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>
@@ -63,7 +67,7 @@
                         <div class="interactionButtons">
                             <button type="button" class="tiny" ng-click="removeDrugTertiaryGroupB(drug)">Remove</button>
                             <label>
-                                {{drug}}
+                                {{drug}} - <input type="text" id="dosageTertiaryGroupB-{{drug}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>
@@ -94,7 +98,7 @@
                         <div class="interactionButtons">
                             <button type="button" class="tiny" ng-click="removeDrugTertiaryGroupC(drug)">Remove</button>
                             <label>
-                                {{drug}}
+                                {{drug}} - <input type="text" id="dosageTertiaryGroupC-{{drug}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>

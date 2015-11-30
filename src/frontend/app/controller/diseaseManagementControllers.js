@@ -81,6 +81,23 @@ app.config(function($routeProvider, RestangularProvider) {
 
         }).
 
+        when('/admin/diseaseManagement/disease/:diseaseId/patientGroupingCombo/:pgId/tx/list',{
+            controller:DiseasePGComboTxListCtrl,
+            templateUrl: 'frontend/partials/admin/disease-pgCombo-txLineList.html',
+            resolve: {
+                /*
+                patientGroupingCombo: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/patientGroupingCombo/' + $route.current.params.pgId + '/';
+                    return Restangular.one(theRoute).get();
+                },
+                */
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
+                    return Restangular.one(theRoute).get();
+                }
+            }
+        }).
+
         when('/admin/diseaseManagement/detail/:id',{
             controller:DiseaseDetailCtrl,
             templateUrl: 'frontend/partials/admin/disease-detail.html',
@@ -91,8 +108,18 @@ app.config(function($routeProvider, RestangularProvider) {
                 }
             }
         })
-
 });
+
+function DiseasePGComboTxListCtrl($scope, $location, Restangular, disease, $route){
+
+    //console.log("*** route pgId: " + $route.current.params.pgId);
+    $scope.disease = disease;
+    //$scope.patientGroupingCombo= patientGroupingCombo;
+
+    $scope.cancel= function(){
+        $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
+    };
+}
 
 
 function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, patientGroupingCombo, disease){
@@ -116,17 +143,13 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
             $scope.drugsTertiaryGroupC= drugs;
         });
 
-    //load the drugs here
+
     /*
-    Restangular.all('drugs').getList().then(
-        function(drugs) {
-            $scope.drugsPrimaryGroupB= drugs;
-        });
-    //load the drugs here
-    Restangular.all('drugs').getList().then(
-        function(drugs) {
-            $scope.drugsPrimaryGroupC= drugs;
-        });
+    $scope.txLine= {
+        id: null,
+        number: null,
+        name: ""
+    };
     */
 
     setUpTxOptionSections($scope);
@@ -308,6 +331,124 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
     };
     //end Tertiary Drugs
 
+    $scope.save= function(){
+
+        /*
+        console.log("SAVE()...$scope.txLine: " + JSON.stringify($scope.txLine));
+        console.log("*** diseaseId: " + $scope.disease.id);
+        console.log("*** patientGroupingCombo: " + $scope.patientGroupingCombo.id);
+        console.log("*** pga: " + $scope.selectedDrugsPrimaryGroupA);
+        */
+
+        /*
+        if($scope.selectedDrugsPrimaryGroupA != null){
+            for(var i=0; i < $scope.selectedDrugsPrimaryGroupA.length; i++){
+                var drugName= $scope.selectedDrugsPrimaryGroupA[i];
+                console.log("*** a: " + drugName);
+                var id= "dosagePrimaryGroupA-" + drugName;
+                var dosage= document.getElementById(id).value;
+                console.log("*** a -- dosage: " + dosage);
+            }
+        }
+        if($scope.selectedDrugsPrimaryGroupB != null) {
+            for (var i = 0; i < $scope.selectedDrugsPrimaryGroupB.length; i++) {
+                console.log("*** b: " + $scope.selectedDrugsPrimaryGroupB[i]);
+            }
+        }
+        if($scope.selectedDrugsPrimaryGroupC != null) {
+            for (var i = 0; i < $scope.selectedDrugsPrimaryGroupC.length; i++) {
+                console.log("*** c: " + $scope.selectedDrugsPrimaryGroupC[i]);
+            }
+        }
+
+        if($scope.selectedDrugsSecondaryGroupA != null) {
+            for (var i = 0; i < $scope.selectedDrugsSecondaryGroupA.length; i++) {
+                console.log("*** d: " + $scope.selectedDrugsSecondaryGroupA[i]);
+            }
+        }
+        if($scope.selectedDrugsSecondaryGroupB != null) {
+            for (var i = 0; i < $scope.selectedDrugsSecondaryGroupB.length; i++) {
+                console.log("*** e: " + $scope.selectedDrugsSecondaryGroupB[i]);
+            }
+        }
+        if($scope.selectedDrugsSecondaryGroupC != null) {
+            for (var i = 0; i < $scope.selectedDrugsSecondaryGroupC.length; i++) {
+                console.log("*** f: " + $scope.selectedDrugsSecondaryGroupC[i]);
+            }
+        }
+
+        if($scope.selectedDrugsTertiaryGroupA != null) {
+            for (var i = 0; i < $scope.selectedDrugsTertiaryGroupA.length; i++) {
+                console.log("*** g: " + $scope.selectedDrugsTertiaryGroupA[i]);
+            }
+        }
+        if($scope.selectedDrugsTertiaryGroupB != null) {
+            for (var i = 0; i < $scope.selectedDrugsTertiaryGroupB.length; i++) {
+                console.log("*** h: " + $scope.selectedDrugsTertiaryGroupB[i]);
+            }
+        }
+        if($scope.selectedDrugsTertiaryGroupC != null) {
+            for (var i = 0; i < $scope.selectedDrugsTertiaryGroupC.length; i++) {
+                console.log("*** i: " + $scope.selectedDrugsTertiaryGroupC[i]);
+            }
+        }
+        */
+        //var s= $scope.txLine;
+        var s= getJSONTxLine($scope);
+
+        Restangular.all('txline/patientGroupingCombo/' + $scope.patientGroupingCombo.id + "/").post(s).then(
+            function() {
+                $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
+            });
+
+    };
+
+}
+
+function getJSONTxLine($scope){
+
+    //var result= JSON.stringify($scope.txLine);
+    /*
+    console.log("*** name: " + $scope.txLine.name);
+    console.log("*** number: " + $scope.txLine.number);
+    console.log("*** info: " + $scope.txLine.information);
+    */
+
+    return {"number":$scope.txLine.number,
+            "name":$scope.txLine.name,
+            "information":$scope.txLine.information,
+            "primaryGroupA":$scope.selectedDrugsPrimaryGroupA,
+            "primaryGroupB":$scope.selectedDrugsPrimaryGroupB,
+            "primaryGroupC":$scope.selectedDrugsPrimaryGroupC,
+            "secondaryGroupA":$scope.selectedDrugsSecondaryGroupA,
+            "secondaryGroupB":$scope.selectedDrugsSecondaryGroupB,
+            "secondaryGroupC":$scope.selectedDrugsSecondaryGroupC,
+            "tertiaryGroupA":$scope.selectedDrugsTertiaryGroupA,
+            "tertiaryGroupB":$scope.selectedDrugsTertiaryGroupB,
+            "tertiaryGroupC":$scope.selectedDrugsTertiaryGroupC,
+            "dosagePrimaryGroupA": getDosage($scope.selectedDrugsPrimaryGroupA, "dosagePrimaryGroupA-"),
+            "dosagePrimaryGroupB": getDosage($scope.selectedDrugsPrimaryGroupB, "dosagePrimaryGroupA-"),
+            "dosagePrimaryGroupC": getDosage($scope.selectedDrugsPrimaryGroupC, "dosagePrimaryGroupA-"),
+            "dosageSecondaryGroupA": getDosage($scope.selectedDrugsSecondaryGroupA, "dosagePrimaryGroupA-"),
+            "dosageSecondaryGroupB": getDosage($scope.selectedDrugsSecondaryGroupB, "dosagePrimaryGroupA-"),
+            "dosageSecondaryGroupC": getDosage($scope.selectedDrugsSecondaryGroupC, "dosagePrimaryGroupA-"),
+            "dosageTertiaryGroupA": getDosage($scope.selectedDrugsTertiaryGroupA, "dosagePrimaryGroupA-"),
+            "dosageTertiaryGroupB": getDosage($scope.selectedDrugsTertiaryGroupB, "dosagePrimaryGroupA-"),
+            "dosageTertiaryGroupC": getDosage($scope.selectedDrugsTertiaryGroupC, "dosagePrimaryGroupA-")
+            };
+}
+
+function getDosage(obj, namePrefix){
+    var result = {};
+    if(obj != null){
+        for(var i=0; i < obj.length; i++){
+            var drugName= obj[i];
+            var id= namePrefix + drugName;
+            var dosage= document.getElementById(id).value;
+            result[drugName]= dosage;
+        }
+    }
+    return result;
 }
 
 function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, patientGroupingCombo, disease) {
@@ -380,11 +521,11 @@ function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, pat
         var comboMap= $scope.disease.patientGroupCombos;
 
         if(comboMap.hasOwnProperty(comboName)){
-            console.log("*** found dup comboName: %s", comboName);
+            //console.log("*** found dup comboName: %s", comboName);
             $scope.hasValidationErrors= true;
         }
         else{
-            console.log("*** NO dup found for: %s", comboName);
+            //console.log("*** NO dup found for: %s", comboName);
         }
         //need to check for duplicate patientGroup set
 
@@ -582,7 +723,7 @@ function getJSONNewPatientGroupingCombo($scope){
             "patientGroupingIds": getPatientGroupingComboIds($scope)};
 }
 
-function getJSONNewPatientGroupingComboForEdit($scope){
+function getJSONSAVEForEdit($scope){
 
     var patientGroupingName= $('#patientGroupingName').val();
 
