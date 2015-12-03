@@ -76,6 +76,10 @@ app.config(function($routeProvider, RestangularProvider) {
                 disease: function(Restangular, $route){
                     var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
                     return Restangular.one(theRoute).get();
+                },
+                txLine: function(Restangular, $route){
+                    var theRoute= 'txline/patientGroupingCombo/' + $route.current.params.pgId + '/';
+                    return Restangular.one(theRoute).get();
                 }
             }
 
@@ -122,10 +126,13 @@ function DiseasePGComboTxListCtrl($scope, $location, Restangular, disease, $rout
 }
 
 
-function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, patientGroupingCombo, disease){
+function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, patientGroupingCombo, disease, txLine){
 
     $scope.disease = disease;
     $scope.patientGroupingCombo= patientGroupingCombo;
+
+    $scope.txLine= txLine;
+    //console.log("*** the TxLine: %s", JSON.stringify(txLine));
 
     //load the drugs here
     Restangular.all('drugs').getList().then(
@@ -143,14 +150,6 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
             $scope.drugsTertiaryGroupC= drugs;
         });
 
-
-    /*
-    $scope.txLine= {
-        id: null,
-        number: null,
-        name: ""
-    };
-    */
 
     setUpTxOptionSections($scope);
 
@@ -333,12 +332,6 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
 
     $scope.save= function(){
 
-        /*
-        console.log("SAVE()...$scope.txLine: " + JSON.stringify($scope.txLine));
-        console.log("*** diseaseId: " + $scope.disease.id);
-        console.log("*** patientGroupingCombo: " + $scope.patientGroupingCombo.id);
-        console.log("*** pga: " + $scope.selectedDrugsPrimaryGroupA);
-        */
 
         /*
         if($scope.selectedDrugsPrimaryGroupA != null){
@@ -394,6 +387,9 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
         }
         */
         //var s= $scope.txLine;
+
+        console.log("*** bmw the TxLine: %s", JSON.stringify($scope.txLine));
+
         var s= getJSONTxLine($scope);
 
         Restangular.all('txline/patientGroupingCombo/' + $scope.patientGroupingCombo.id + "/").post(s).then(
@@ -407,14 +403,9 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
 
 function getJSONTxLine($scope){
 
-    //var result= JSON.stringify($scope.txLine);
-    /*
-    console.log("*** name: " + $scope.txLine.name);
-    console.log("*** number: " + $scope.txLine.number);
-    console.log("*** info: " + $scope.txLine.information);
-    */
-
-    return {"number":$scope.txLine.number,
+    return {"id": $scope.txLine.id,
+            "pgcId": $scope.txLine.pgcId,
+            "number":$scope.txLine.number,
             "name":$scope.txLine.name,
             "information":$scope.txLine.information,
             "primaryGroupA":$scope.selectedDrugsPrimaryGroupA,
@@ -427,28 +418,33 @@ function getJSONTxLine($scope){
             "tertiaryGroupB":$scope.selectedDrugsTertiaryGroupB,
             "tertiaryGroupC":$scope.selectedDrugsTertiaryGroupC,
             "dosagePrimaryGroupA": getDosage($scope.selectedDrugsPrimaryGroupA, "dosagePrimaryGroupA-"),
-            "dosagePrimaryGroupB": getDosage($scope.selectedDrugsPrimaryGroupB, "dosagePrimaryGroupA-"),
-            "dosagePrimaryGroupC": getDosage($scope.selectedDrugsPrimaryGroupC, "dosagePrimaryGroupA-"),
-            "dosageSecondaryGroupA": getDosage($scope.selectedDrugsSecondaryGroupA, "dosagePrimaryGroupA-"),
-            "dosageSecondaryGroupB": getDosage($scope.selectedDrugsSecondaryGroupB, "dosagePrimaryGroupA-"),
-            "dosageSecondaryGroupC": getDosage($scope.selectedDrugsSecondaryGroupC, "dosagePrimaryGroupA-"),
-            "dosageTertiaryGroupA": getDosage($scope.selectedDrugsTertiaryGroupA, "dosagePrimaryGroupA-"),
-            "dosageTertiaryGroupB": getDosage($scope.selectedDrugsTertiaryGroupB, "dosagePrimaryGroupA-"),
-            "dosageTertiaryGroupC": getDosage($scope.selectedDrugsTertiaryGroupC, "dosagePrimaryGroupA-")
+            "dosagePrimaryGroupB": getDosage($scope.selectedDrugsPrimaryGroupB, "dosagePrimaryGroupB-"),
+            "dosagePrimaryGroupC": getDosage($scope.selectedDrugsPrimaryGroupC, "dosagePrimaryGroupC-"),
+            "dosageSecondaryGroupA": getDosage($scope.selectedDrugsSecondaryGroupA, "dosageSecondaryGroupA-"),
+            "dosageSecondaryGroupB": getDosage($scope.selectedDrugsSecondaryGroupB, "dosageSecondaryGroupB-"),
+            "dosageSecondaryGroupC": getDosage($scope.selectedDrugsSecondaryGroupC, "dosageSecondaryGroupC-"),
+            "dosageTertiaryGroupA": getDosage($scope.selectedDrugsTertiaryGroupA, "dosageTertiaryGroupA-"),
+            "dosageTertiaryGroupB": getDosage($scope.selectedDrugsTertiaryGroupB, "dosageTertiaryGroupB-"),
+            "dosageTertiaryGroupC": getDosage($scope.selectedDrugsTertiaryGroupC, "dosageTertiaryGroupC-")
             };
 }
 
 function getDosage(obj, namePrefix){
-    var result = {};
+    var result = [];
     if(obj != null){
         for(var i=0; i < obj.length; i++){
             var drugName= obj[i];
             var id= namePrefix + drugName;
             var dosage= document.getElementById(id).value;
-            result[drugName]= dosage;
+            var dosageObj= {
+                drugName: drugName,
+                dosage: dosage
+            };
+            result.push(dosageObj);
         }
     }
     return result;
+
 }
 
 function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, patientGroupingCombo, disease) {
