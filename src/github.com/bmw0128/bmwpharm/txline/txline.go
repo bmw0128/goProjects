@@ -26,6 +26,8 @@ func MakeMuxer(prefix string) http.Handler {
 
 	m.HandleFunc("/patientGroupingCombo/{pgcId}/", NewTxLine).Methods("POST")
 	m.HandleFunc("/patientGroupingCombo/{pgcId}/", GetTxLine).Methods("GET")
+	m.HandleFunc("/patientGroupingCombo/{pgcId}/all", GetAllTxLines).Methods("GET")
+	m.HandleFunc("/edit/{id}/", EditTxLine).Methods("GET")
 
 	// Everything else should 404.
 	m.HandleFunc("/{path:.*}", gorca.NotFoundFunc)
@@ -62,6 +64,27 @@ type TxLine struct{
 type DosageObj struct {
 	DrugName string `json:"drugName"`
 	Dosage string `json:"dosage"`
+}
+
+func GetAllTxLines(w http.ResponseWriter, r *http.Request){
+
+	c := appengine.NewContext(r)
+
+	loggedInUser := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, loggedInUser.Email)
+
+	if(!clients.ClientIsAdmin(loggedInClient)){
+		gorca.WriteJSON(c, w, r, http.StatusForbidden)
+	}else {
+
+		vars := mux.Vars(r)
+		pgcId := vars["pgcId"]
+
+		txLines := GetAllTxLinesByPGCId(c, pgcId)
+		//c.Infof("*** found these txLines: %v", txLines)
+
+		gorca.WriteJSON(c, w, r, txLines)
+	}
 }
 
 func GetTxLine(w http.ResponseWriter, r *http.Request){
@@ -172,4 +195,62 @@ func GetTxLineByPGCId(c appengine.Context, pgcId string) TxLine{
 	return result
 }
 
+func GetAllTxLinesByPGCId(c appengine.Context, pgcId string) []TxLine{
+
+	q := datastore.NewQuery("TxLine").Filter("PGCId=", pgcId)
+	var txLines []TxLine
+
+	c.Infof("*** in GetAllTxLinesByPGCId for pgcId: %v", pgcId)
+
+	keys, err := q.GetAll(c, &txLines)
+	if err != nil {
+		c.Errorf("error fetching TxLines for pgcId: %v, the error is: %v", pgcId, err)
+	}
+	for idx, key := range keys {
+		id := strconv.FormatInt(key.IntID(), 10)
+		txLines[idx].Id= id
+	}
+	return txLines
+}
+
+func EditTxLine(w http.ResponseWriter, r *http.Request) {
+
+	c := appengine.NewContext(r)
+	u := user.Current(c)
+	loggedInClient := clients.GetClientByEmail(c, u.Email)
+
+	c.Infof("*** in EditTxLine")
+
+	if(clients.ClientIsAdmin(loggedInClient)){
+
+		//Get the Key.
+		vars := mux.Vars(r)
+		stringId := vars["id"]
+		c.Infof("*** stringId  in EditTxLine: %v", stringId)
+
+		entity_id_int, _ := strconv.ParseInt(stringId, 10, 64)
+		key := datastore.NewKey(c, "TxLine", "", entity_id_int, nil)
+
+		q := datastore.NewQuery("TxLine").Filter("__key__ =", key)
+		t := q.Run(c)
+		var result TxLine
+
+		for {
+			//key, err := t.Next(&result)
+			_, err := t.Next(&result)
+			if err == datastore.Done {
+				result.Id= stringId
+				c.Infof("*** EditTxLine got txLine: %v: ", result)
+				gorca.WriteJSON(c, w, r, result)
+				break // No further entities match the query.
+			}
+			if err != nil {
+				c.Errorf("Fetching next TxLine: %v", err)
+				break
+			}
+		}
+
+	}
+
+}
 

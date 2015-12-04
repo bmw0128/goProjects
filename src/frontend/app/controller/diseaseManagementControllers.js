@@ -89,15 +89,17 @@ app.config(function($routeProvider, RestangularProvider) {
             controller:DiseasePGComboTxListCtrl,
             templateUrl: 'frontend/partials/admin/disease-pgCombo-txLineList.html',
             resolve: {
-                /*
                 patientGroupingCombo: function(Restangular, $route){
                     var theRoute= 'diseases/' + $route.current.params.diseaseId + '/patientGroupingCombo/' + $route.current.params.pgId + '/';
                     return Restangular.one(theRoute).get();
                 },
-                */
                 disease: function(Restangular, $route){
                     var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
                     return Restangular.one(theRoute).get();
+                },
+                txLines: function(Restangular, $route){
+                    var theRoute= 'txline/patientGroupingCombo/' + $route.current.params.pgId + '/all';
+                    return Restangular.all(theRoute).getList();
                 }
             }
         }).
@@ -111,14 +113,28 @@ app.config(function($routeProvider, RestangularProvider) {
                     return Restangular.one(theRoute).get();
                 }
             }
-        })
+        }).
+
+    when('/admin/diseaseManagement/detail/:id',{
+        controller:DiseaseDetailCtrl,
+        templateUrl: 'frontend/partials/admin/disease-detail.html',
+        resolve: {
+            disease: function(Restangular, $route){
+                var theRoute= 'drugs/withinteractions/' + $route.current.params.id + '/';
+                return Restangular.one(theRoute).get();
+            }
+        }
+    })
 });
 
-function DiseasePGComboTxListCtrl($scope, $location, Restangular, disease, $route){
+function DiseasePGComboTxListCtrl($scope, $location, Restangular, disease, $route, patientGroupingCombo, txLines){
 
     //console.log("*** route pgId: " + $route.current.params.pgId);
     $scope.disease = disease;
-    //$scope.patientGroupingCombo= patientGroupingCombo;
+    $scope.patientGroupingCombo= patientGroupingCombo;
+
+    $scope.txLines= txLines;
+    console.log("*** the TxLines: %s", JSON.stringify(txLines));
 
     $scope.cancel= function(){
         $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);

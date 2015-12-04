@@ -3,7 +3,7 @@
     <p>
     <div class="row">
         <div class="small-12 columns">
-            Disease Name: {{disease.diseaseName}}
+            {{disease.diseaseName}}:{{patientGroupingCombo.patientGroupingName}}
         </div>
     </div>
 
@@ -25,20 +25,21 @@
 
                 <tbody>
 
-                <!--
                 <tr ng-repeat="txLine in txLines">
 
                     <td class="nameCell">
                         {{txLine.number}} - {{txLine.name}}
                     </td>
+                    <!--
                     <td class="actionCell">
                         <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/edit/{{patientGrouping.id}}"><i class="foundicon-edit"></i></a>
                     </td>
+                    -->
                     <td class="nameCell">
-                        <a href="#/admin/diseaseManagement/disease/{{disease.id}}/patientGroupingCombo/{{patientGrouping.id}}/tx/list">TxLines</a>
+                        <a href="#/admin/txLineManagement/edit/{{txLine.id}}">edit</a>
                     </td>
                 </tr>
-                -->
+
                 </tbody>
             </table>
 
