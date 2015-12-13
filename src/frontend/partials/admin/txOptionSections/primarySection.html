@@ -34,9 +34,9 @@
                 <div ng-repeat="drug in selectedDrugsPrimaryGroupA | orderBy:'drug'">
                     <div class="interactionInfoContainer">
                         <div class="interactionButtons">
-                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupA(drug)">Remove</button>
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupA(drug.drugName)">Remove</button>
                             <label>
-                                {{drug}} - <input type="text" id="dosagePrimaryGroupA-{{drug}}" placeholder="Enter dosage..."/>
+                                {{drug.drugName}} - <input value="{{drug.dosage}}" type="text" id="dosagePrimaryGroupA-{{drug.drugName}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>
@@ -65,9 +65,9 @@
                 <div ng-repeat="drug in selectedDrugsPrimaryGroupB | orderBy:'drug'">
                     <div class="interactionInfoContainer">
                         <div class="interactionButtons">
-                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupB(drug)">Remove</button>
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupB(drug.drugName)">Remove</button>
                             <label>
-                                {{drug}} - <input type="text" id="dosagePrimaryGroupB-{{drug}}" placeholder="Enter dosage..."/>
+                                {{drug.drugName}} - <input value="{{drug.dosage}}" type="text" id="dosagePrimaryGroupB-{{drug.drugName}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>
@@ -96,9 +96,9 @@
                 <div ng-repeat="drug in selectedDrugsPrimaryGroupC | orderBy:'drug'">
                     <div class="interactionInfoContainer">
                         <div class="interactionButtons">
-                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupC(drug)">Remove</button>
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupC(drug.drugName)">Remove</button>
                             <label>
-                                {{drug}} - <input type="text" id="dosagePrimaryGroupC-{{drug}}" placeholder="Enter dosage..."/>
+                                {{drug.drugName}} - <input value="{{drug.dosage}}" type="text" id="dosagePrimaryGroupC-{{drug.drugName}}" placeholder="Enter dosage..."/>
                             </label>
                         </div>
                     </div>

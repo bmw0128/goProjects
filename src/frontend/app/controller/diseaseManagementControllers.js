@@ -134,7 +134,7 @@ function DiseasePGComboTxListCtrl($scope, $location, Restangular, disease, $rout
     $scope.patientGroupingCombo= patientGroupingCombo;
 
     $scope.txLines= txLines;
-    console.log("*** the TxLines: %s", JSON.stringify(txLines));
+    //console.log("*** the TxLines: %s", JSON.stringify(txLines));
 
     $scope.cancel= function(){
         $location.path('/admin/diseaseManagement/patientGroupings/' + $scope.disease.id);
