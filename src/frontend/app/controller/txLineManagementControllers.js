@@ -19,7 +19,27 @@ app.config(function($routeProvider, RestangularProvider) {
                     return Restangular.one(theRoute).get();
                 }
             }
+        }).
+
+        when('/admin/txLineManagement/disease/:diseaseId/patientGroupingCombo/:pgId/tx/new',{
+            controller:TxLineEditCtrl,
+            templateUrl: 'frontend/partials/admin/disease-patientGroupingCombo-txLine.html',
+            resolve: {
+                patientGroupingCombo: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/patientGroupingCombo/' + $route.current.params.pgId + '/';
+                    return Restangular.one(theRoute).get();
+                },
+                disease: function(Restangular, $route){
+                    var theRoute= 'diseases/' + $route.current.params.diseaseId + '/';
+                    return Restangular.one(theRoute).get();
+                },
+                txLine: function(){
+                    return null;
+                }
+            }
+
         })
+
 });
 
 function setExistingDrugsForEdit($scope){
@@ -85,34 +105,36 @@ function setExistingDrugsForEdit($scope){
     }
 
     for(var y=0; y < $scope.txLine.dosageSecondaryGroupA.length; y++){
-        $scope.selectedDrugsPrimaryGroupA.push($scope.txLine.dosageSecondaryGroupA[y]);
+        $scope.selectedDrugsSecondaryGroupA.push($scope.txLine.dosageSecondaryGroupA[y]);
     }
     for(var y=0; y < $scope.txLine.dosageSecondaryGroupB.length; y++){
-        $scope.selectedDrugsPrimaryGroupB.push($scope.txLine.dosageSecondaryGroupB[y]);
+        $scope.selectedDrugsSecondaryGroupB.push($scope.txLine.dosageSecondaryGroupB[y]);
     }
     for(var y=0; y < $scope.txLine.dosageSecondaryGroupC.length; y++){
-        $scope.selectedDrugsPrimaryGroupC.push($scope.txLine.dosageSecondaryGroupC[y]);
+        $scope.selectedDrugsSecondaryGroupC.push($scope.txLine.dosageSecondaryGroupC[y]);
     }
 
     for(var y=0; y < $scope.txLine.dosageTertiaryGroupA.length; y++){
-        $scope.selectedDrugsPrimaryGroupA.push($scope.txLine.dosageTertiaryGroupA[y]);
+        $scope.selectedDrugsTertiaryGroupA.push($scope.txLine.dosageTertiaryGroupA[y]);
     }
     for(var y=0; y < $scope.txLine.dosageTertiaryGroupB.length; y++){
-        $scope.selectedDrugsPrimaryGroupB.push($scope.txLine.dosageTertiaryGroupB[y]);
+        $scope.selectedDrugsTertiaryGroupB.push($scope.txLine.dosageTertiaryGroupB[y]);
     }
     for(var y=0; y < $scope.txLine.dosageTertiaryGroupC.length; y++){
-        $scope.selectedDrugsPrimaryGroupC.push($scope.txLine.dosageTertiaryGroupC[y]);
+        $scope.selectedDrugsTertiaryGroupC.push($scope.txLine.dosageTertiaryGroupC[y]);
     }
 
 }
 
 function TxLineEditCtrl($scope, $location, Restangular, txLine, patientGroupingCombo, disease){
 
-    $scope.txLine= txLine;
+    if(txLine != null)
+        $scope.txLine= txLine;
     $scope.disease= disease;
     $scope.patientGroupingCombo= patientGroupingCombo;
 
-    setExistingDrugsForEdit($scope);
+    if(txLine != null)
+        setExistingDrugsForEdit($scope);
 
     //load the drugs here
     Restangular.all('drugs').getList().then(
