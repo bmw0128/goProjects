@@ -203,13 +203,14 @@ function DiseasePatientGroupingComboNewTxCtrl($scope, $location, Restangular, pa
         if(idx === -1)
             $scope.selectedDrugsPrimaryGroupB.push(typeAheadDrugNameGroupB);
     };
-
+    /*
     $scope.removeDrugPrimaryGroupB= function(drugNameGroupB){
 
         var idx= $scope.selectedDrugsPrimaryGroupB.indexOf(drugNameGroupB);
         if(idx > -1)
             $scope.selectedDrugsPrimaryGroupB.splice(idx, 1);
     };
+    */
 
     $scope.addDrugPrimaryGroupC= function(obj){
         $scope.modeldisplayC= '';

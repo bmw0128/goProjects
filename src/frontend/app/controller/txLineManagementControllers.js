@@ -66,7 +66,13 @@ function setExistingDrugsForEdit($scope){
         $scope.txLine.dosageTertiaryGroupC= [];
     }
 
-
+    /**
+     * Example of Dosage, note that it contains both the drugName and dosage:
+     * "dosagePrimaryGroupB":[{"drugName":"trandolapril","dosage":"5mg - 7mg per day"},
+     *                                  {"drugName":"norco","dosage":"56ng every other day"}],
+     *
+     *  So, it's like adding a Drug object to the array: Drug{drugName:'xyz', dosage:'10mg'}
+     */
 
     for(var y=0; y < $scope.txLine.dosagePrimaryGroupA.length; y++){
         $scope.selectedDrugsPrimaryGroupA.push($scope.txLine.dosagePrimaryGroupA[y]);
@@ -97,7 +103,6 @@ function setExistingDrugsForEdit($scope){
     for(var y=0; y < $scope.txLine.dosageTertiaryGroupC.length; y++){
         $scope.selectedDrugsPrimaryGroupC.push($scope.txLine.dosageTertiaryGroupC[y]);
     }
-
 
 }
 
@@ -138,55 +143,79 @@ function TxLineEditCtrl($scope, $location, Restangular, txLine, patientGroupingC
 
         $scope.modeldisplayA= '';
         var typeAheadDrugNameGroupA= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupA;
+
         if($scope.selectedDrugsPrimaryGroupA == null)
             $scope.selectedDrugsPrimaryGroupA= [];
 
-        var idx= $scope.selectedDrugsPrimaryGroupA.indexOf(typeAheadDrugNameGroupA);
-        if(idx === -1)
-            $scope.selectedDrugsPrimaryGroupA.push(typeAheadDrugNameGroupA);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsPrimaryGroupA.length; i++){
+            var aDrugName= $scope.selectedDrugsPrimaryGroupA[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupA){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsPrimaryGroupA.push(drug);
+        }
     };
 
-    $scope.removeDrugPrimaryGroupA= function(drugNameGroupA){
-
-        var idx= $scope.selectedDrugsPrimaryGroupA.indexOf(drugNameGroupA);
-        if(idx > -1)
-            $scope.selectedDrugsPrimaryGroupA.splice(idx, 1);
+    $scope.removeDrugPrimaryGroupA= function(drugIndexGroupA){
+        $scope.selectedDrugsPrimaryGroupA.splice(drugIndexGroupA, 1);
     };
 
     $scope.addDrugPrimaryGroupB= function(obj){
         $scope.modeldisplayB= '';
         var typeAheadDrugNameGroupB= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupB;
+
         if($scope.selectedDrugsPrimaryGroupB == null)
             $scope.selectedDrugsPrimaryGroupB= [];
 
-        var idx= $scope.selectedDrugsPrimaryGroupB.indexOf(typeAheadDrugNameGroupB);
-        if(idx === -1)
-            $scope.selectedDrugsPrimaryGroupB.push(typeAheadDrugNameGroupB);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsPrimaryGroupB.length; i++){
+            var aDrugName= $scope.selectedDrugsPrimaryGroupB[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupB){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsPrimaryGroupB.push(drug);
+        }
     };
 
-    $scope.removeDrugPrimaryGroupB= function(drugNameGroupB){
-
-        var idx= $scope.selectedDrugsPrimaryGroupB.indexOf(drugNameGroupB);
-        if(idx > -1)
-            $scope.selectedDrugsPrimaryGroupB.splice(idx, 1);
+    $scope.removeDrugPrimaryGroupB= function(drugIndexGroupB){
+        $scope.selectedDrugsPrimaryGroupB.splice(drugIndexGroupB, 1);
     };
 
     $scope.addDrugPrimaryGroupC= function(obj){
         $scope.modeldisplayC= '';
         var typeAheadDrugNameGroupC= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupC;
+
         if($scope.selectedDrugsPrimaryGroupC == null)
             $scope.selectedDrugsPrimaryGroupC= [];
 
-        var idx= $scope.selectedDrugsPrimaryGroupC.indexOf(typeAheadDrugNameGroupC);
-        if(idx === -1)
-            $scope.selectedDrugsPrimaryGroupC.push(typeAheadDrugNameGroupC);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsPrimaryGroupC.length; i++){
+            var aDrugName= $scope.selectedDrugsPrimaryGroupC[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupC){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsPrimaryGroupC.push(drug);
+        }
     };
 
-    $scope.removeDrugPrimaryGroupC= function(drugNameGroupC){
-
-        var idx= $scope.selectedDrugsPrimaryGroupC.indexOf(drugNameGroupC);
-        if(idx > -1)
-            $scope.selectedDrugsPrimaryGroupC.splice(idx, 1);
+    $scope.removeDrugPrimaryGroupC= function(drugIndexGroupC){
+        $scope.selectedDrugsPrimaryGroupC.splice(drugIndexGroupC, 1);
     };
     //end Primary Drugs
 
@@ -195,57 +224,81 @@ function TxLineEditCtrl($scope, $location, Restangular, txLine, patientGroupingC
 
         $scope.modeldisplaySecA= '';
         var typeAheadDrugNameGroupA= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupA;
+
         if($scope.selectedDrugsSecondaryGroupA == null)
             $scope.selectedDrugsSecondaryGroupA= [];
 
-        var idx= $scope.selectedDrugsSecondaryGroupA.indexOf(typeAheadDrugNameGroupA);
-        if(idx === -1)
-            $scope.selectedDrugsSecondaryGroupA.push(typeAheadDrugNameGroupA);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsSecondaryGroupA.length; i++){
+            var aDrugName= $scope.selectedDrugsSecondaryGroupA[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupA){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsSecondaryGroupA.push(drug);
+        }
     };
 
-    $scope.removeDrugSecondaryGroupA= function(drugNameGroupA){
-
-        var idx= $scope.selectedDrugsSecondaryGroupA.indexOf(drugNameGroupA);
-        if(idx > -1)
-            $scope.selectedDrugsSecondaryGroupA.splice(idx, 1);
+    $scope.removeDrugSecondaryGroupA= function(drugIndexGroupA){
+        $scope.selectedDrugsSecondaryGroupA.splice(drugIndexGroupA, 1);
     };
 
     $scope.addDrugSecondaryGroupB= function(obj){
 
         $scope.modeldisplaySecB= '';
-        var typeAheadDrugNameGroupA= obj.target.attributes.data.value;
+        var typeAheadDrugNameGroupB= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupB;
+
         if($scope.selectedDrugsSecondaryGroupB == null)
             $scope.selectedDrugsSecondaryGroupB= [];
 
-        var idx= $scope.selectedDrugsSecondaryGroupB.indexOf(typeAheadDrugNameGroupA);
-        if(idx === -1)
-            $scope.selectedDrugsSecondaryGroupB.push(typeAheadDrugNameGroupA);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsSecondaryGroupB.length; i++){
+            var aDrugName= $scope.selectedDrugsSecondaryGroupB[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupB){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsSecondaryGroupB.push(drug);
+        }
     };
 
-    $scope.removeDrugSecondaryGroupB= function(drugNameGroupA){
-
-        var idx= $scope.selectedDrugsSecondaryGroupB.indexOf(drugNameGroupA);
-        if(idx > -1)
-            $scope.selectedDrugsSecondaryGroupB.splice(idx, 1);
+    $scope.removeDrugSecondaryGroupB= function(drugIndexGroupB){
+        $scope.selectedDrugsSecondaryGroupB.splice(drugIndexGroupB, 1);
     };
 
     $scope.addDrugSecondaryGroupC= function(obj){
 
         $scope.modeldisplaySecC= '';
-        var typeAheadDrugNameGroupA= obj.target.attributes.data.value;
+        var typeAheadDrugNameGroupC= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupC;
+
         if($scope.selectedDrugsSecondaryGroupC == null)
             $scope.selectedDrugsSecondaryGroupC= [];
 
-        var idx= $scope.selectedDrugsSecondaryGroupC.indexOf(typeAheadDrugNameGroupA);
-        if(idx === -1)
-            $scope.selectedDrugsSecondaryGroupC.push(typeAheadDrugNameGroupA);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsSecondaryGroupC.length; i++){
+            var aDrugName= $scope.selectedDrugsSecondaryGroupC[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupC){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsSecondaryGroupC.push(drug);
+        }
     };
 
-    $scope.removeDrugSecondaryGroupC= function(drugNameGroupA){
-
-        var idx= $scope.selectedDrugsSecondaryGroupC.indexOf(drugNameGroupA);
-        if(idx > -1)
-            $scope.selectedDrugsSecondaryGroupC.splice(idx, 1);
+    $scope.removeDrugSecondaryGroupC= function(drugIndexGroupC){
+        $scope.selectedDrugsSecondaryGroupC.splice(drugIndexGroupC, 1);
     };
     //end Secondary Drugs
 
@@ -254,55 +307,79 @@ function TxLineEditCtrl($scope, $location, Restangular, txLine, patientGroupingC
 
         $scope.modeldisplayTerA= '';
         var typeAheadDrugNameGroupA= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupA;
+
         if($scope.selectedDrugsTertiaryGroupA == null)
             $scope.selectedDrugsTertiaryGroupA= [];
 
-        var idx= $scope.selectedDrugsTertiaryGroupA.indexOf(typeAheadDrugNameGroupA);
-        if(idx === -1)
-            $scope.selectedDrugsTertiaryGroupA.push(typeAheadDrugNameGroupA);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsTertiaryGroupA.length; i++){
+            var aDrugName= $scope.selectedDrugsTertiaryGroupA[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupA){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsTertiaryGroupA.push(drug);
+        }
     };
 
-    $scope.removeDrugTertiaryGroupA= function(drugNameGroupA){
-
-        var idx= $scope.selectedDrugsTertiaryGroupA.indexOf(drugNameGroupA);
-        if(idx > -1)
-            $scope.selectedDrugsTertiaryGroupA.splice(idx, 1);
+    $scope.removeDrugTertiaryGroupA= function(drugIndexGroupA){
+        $scope.selectedDrugsTertiaryGroupA.splice(drugIndexGroupA, 1);
     };
 
     $scope.addDrugTertiaryGroupB= function(obj){
         $scope.modeldisplayTerB= '';
         var typeAheadDrugNameGroupB= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupB;
+
         if($scope.selectedDrugsTertiaryGroupB == null)
             $scope.selectedDrugsTertiaryGroupB= [];
 
-        var idx= $scope.selectedDrugsTertiaryGroupB.indexOf(typeAheadDrugNameGroupB);
-        if(idx === -1)
-            $scope.selectedDrugsTertiaryGroupB.push(typeAheadDrugNameGroupB);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsTertiaryGroupB.length; i++){
+            var aDrugName= $scope.selectedDrugsTertiaryGroupB[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupB){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsTertiaryGroupB.push(drug);
+        }
     };
 
-    $scope.removeDrugTertiaryGroupB= function(drugNameGroupB){
-
-        var idx= $scope.selectedDrugsTertiaryGroupB.indexOf(drugNameGroupB);
-        if(idx > -1)
-            $scope.selectedDrugsTertiaryGroupB.splice(idx, 1);
+    $scope.removeDrugTertiaryGroupB= function(drugIndexGroupB){
+        $scope.selectedDrugsTertiaryGroupB.splice(drugIndexGroupB, 1);
     };
 
     $scope.addDrugTertiaryGroupC= function(obj){
         $scope.modeldisplayTerC= '';
         var typeAheadDrugNameGroupC= obj.target.attributes.data.value;
+        var drug= {drugName:'',dosage:''};
+        drug.drugName= typeAheadDrugNameGroupC;
+
         if($scope.selectedDrugsTertiaryGroupC == null)
             $scope.selectedDrugsTertiaryGroupC= [];
 
-        var idx= $scope.selectedDrugsTertiaryGroupC.indexOf(typeAheadDrugNameGroupC);
-        if(idx === -1)
-            $scope.selectedDrugsTertiaryGroupC.push(typeAheadDrugNameGroupC);
+        var addToList= true;
+        for(var i=0; i < $scope.selectedDrugsTertiaryGroupC.length; i++){
+            var aDrugName= $scope.selectedDrugsTertiaryGroupC[i].drugName;
+            if(aDrugName === typeAheadDrugNameGroupC){
+                addToList= false;
+                break;
+            }
+        }
+        if(addToList){
+            $scope.selectedDrugsTertiaryGroupC.push(drug);
+        }
     };
 
-    $scope.removeDrugTertiaryGroupC= function(drugNameGroupC){
-
-        var idx= $scope.selectedDrugsTertiaryGroupC.indexOf(drugNameGroupC);
-        if(idx > -1)
-            $scope.selectedDrugsTertiaryGroupC.splice(idx, 1);
+    $scope.removeDrugTertiaryGroupC= function(drugIndexGroupC){
+        $scope.selectedDrugsTertiaryGroupC.splice(drugIndexGroupC, 1);
     };
     //end Tertiary Drugs
 

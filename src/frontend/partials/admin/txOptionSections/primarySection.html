@@ -62,10 +62,10 @@
         <div class="row">
             <div class="small-12 columns divTable">
 
-                <div ng-repeat="drug in selectedDrugsPrimaryGroupB | orderBy:'drug'">
+                <div ng-repeat="drug in selectedDrugsPrimaryGroupB | orderBy:'drug' track by $index">
                     <div class="interactionInfoContainer">
                         <div class="interactionButtons">
-                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupB(drug.drugName)">Remove</button>
+                            <button type="button" class="tiny" ng-click="removeDrugPrimaryGroupB($index)">Remove</button>
                             <label>
                                 {{drug.drugName}} - <input value="{{drug.dosage}}" type="text" id="dosagePrimaryGroupB-{{drug.drugName}}" placeholder="Enter dosage..."/>
                             </label>
