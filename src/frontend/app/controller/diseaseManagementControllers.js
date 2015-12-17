@@ -550,7 +550,8 @@ function DiseaseEditPatientGroupingComboCtrl($scope, $location, Restangular, pat
 
 
         var s= getJSONNewPatientGroupingComboForEdit($scope);
-        console.log("*** Edit PG post: %s", JSON.stringify(s));
+
+        //console.log("*** Edit PG post: %s", JSON.stringify(s));
 
         var diseaseId= $scope.disease.id;
 
@@ -734,6 +735,14 @@ function getJSONNewPatientGroupingCombo($scope){
 
     return {"patientGroupingName":patientGroupingName.toLowerCase(),
             "patientGroupingIds": getPatientGroupingComboIds($scope)};
+}
+
+function getJSONNewPatientGroupingComboForEdit($scope){
+
+    var patientGroupingName= $('#patientGroupingName').val();
+
+    return {"patientGroupingName":patientGroupingName.toLowerCase(),
+        "patientGroupingIds": getPatientGroupingComboIdsForEdit($scope)};
 }
 
 function getJSONSAVEForEdit($scope){
